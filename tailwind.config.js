@@ -18,6 +18,7 @@ module.exports = {
     extend: {
       colors: {
         primary: "#264653",
+        main:"#E6E5E5"
       },
       animation: {
         orbit: "orbit calc(var(--duration)*1s) linear infinite",

@@ -1,15 +1,85 @@
-import { Button, Input } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import { CiLock } from "react-icons/ci";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { IoPersonOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { LoginCredentials } from "../../utils/types";
+import { toast } from "react-toastify";
+import useLogin from "./services/useLogin";
+import CustomInput from "../../components/CustomInput";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [isVisible, setIsVisible] = useState(false);
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
 
+  const [errors, setErrors] = useState({
+    username: "",
+    password: "",
+  });
+
+  const { mutate, isPending } = useLogin();
+
+  const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
+
+  // Memoized input change handler with debouncing
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  }, []);
+
+  // Step 1 validation
+  const validateStep1 = useCallback(() => {
+    let valid = true;
+    const newErrors = { ...errors };
+
+    if (formData.username.length < 2) {
+      newErrors.username = "Firstname must be at least 2 characters";
+      valid = false;
+    } else {
+      newErrors.username = "";
+    }
+
+    if (formData.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+      valid = false;
+    } else {
+      newErrors.password = "";
+    }
+
+    setErrors(newErrors);
+
+    Object.keys(newErrors).forEach((key) => {
+      if (newErrors[key as keyof typeof newErrors]) {
+        toast.error(newErrors[key as keyof typeof newErrors], { toastId: key });
+      }
+    });
+
+    return valid;
+  }, [formData, errors]);
+
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+
+      if (validateStep1()) {
+        const newData: LoginCredentials = {
+          id: formData.username,
+          password: formData.password,
+        };
+
+        mutate(newData);
+      }
+    },
+    [validateStep1, formData, mutate]
+  );
 
   return (
     <div className="w-full h-full flex items-center lg:items-start justify-center flex-col">
@@ -24,68 +94,35 @@ export default function Login() {
             Good to see you again today!👋
           </h1>
         </div>
-        <form action="">
+        <form className="w-full" onSubmit={handleSubmit}>
           <p className="text-slate-500">Sign in to your account to continue</p>
-          <div className="py-6 space-y-4 max-w-sm">
-            <Input
-              placeholder="Your Username..."
-              type="text"
+          <div className="py-6 w-full space-y-4 max-w-xs md:max-w-sm">
+            <CustomInput
               name="username"
-              startContent={
-                <IoPersonOutline
-                  color="#264653"
-                  className="text-xl text-default-400 pointer-events-none flex-shrink-0 "
-                />
+              value={formData.username}
+              placeholder="Username"
+              type="text"
+              handleChange={handleChange}
+              startIcon={
+                <IoPersonOutline color="#264653" className="text-xl" />
               }
-              classNames={{
-                input: [" outline-none focus:outline-none"],
-                innerWrapper: "bg-white hover:bg-white focus:bg-white",
-                inputWrapper: [
-                  "border-2 border-primary bg-white data-[hover=true]:bg-white group-data-[focus=true]/input:bg-white",
-                ],
-              }}
-              className="max-w-xs"
-              size="md"
             />
-            <Input
-              placeholder="Your Password..."
+            <CustomInput
               name="password"
+              value={formData.password}
+              placeholder="Password"
               type={isVisible ? "text" : "password"}
-              startContent={
-                <CiLock
-                  color="#264653"
-                  className="text-xl text-default-400 pointer-events-none flex-shrink-0 "
-                />
-              }
-              endContent={
+              handleChange={handleChange}
+              startIcon={<CiLock color="#264653" className="text-xl" />}
+              endIcon={
                 <button
                   className="focus:outline-none"
                   type="button"
                   onClick={toggleVisibility}
-                  aria-label="toggle password visibility"
                 >
-                  {isVisible ? (
-                    <FaRegEyeSlash
-                      color="#264653"
-                      className="text-xl text-default-400 pointer-events-none"
-                    />
-                  ) : (
-                    <FaRegEye
-                      color="#264653"
-                      className="text-xl text-default-400 pointer-events-none"
-                    />
-                  )}
+                  {isVisible ? <FaRegEyeSlash className="text-xl" /> : <FaRegEye className="text-xl" />}
                 </button>
               }
-              classNames={{
-                input: [" outline-none focus:outline-none"],
-                innerWrapper: "bg-white hover:bg-white focus:bg-white",
-                inputWrapper: [
-                  "border-2 border-primary bg-white data-[hover=true]:bg-white group-data-[focus=true]/input:bg-white",
-                ],
-              }}
-              className="max-w-xs"
-              size="md"
             />
             <div className="flex justify-end">
               <p
@@ -96,11 +133,13 @@ export default function Login() {
               </p>
             </div>
             <Button
-              className="bg-primary w-full max-w-xs outline-none font-semibold data-[focus-visible=true]:outline-0 text-white"
-              size="md"
+              className="bg-primary w-full outline-none rounded-none font-semibold data-[focus-visible=true]:outline-0 text-white"
+              size="lg"
               name="submit"
+              type="submit"
+              isLoading={isPending}
             >
-              Sign in
+              {isPending ? " " : "Sign in"}
             </Button>
             <div className="flex justify-start">
               <p className="font-medium text-sm">

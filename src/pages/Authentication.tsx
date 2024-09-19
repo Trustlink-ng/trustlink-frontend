@@ -13,9 +13,9 @@ export default function Authentication() {
           <div className="p-12 space-y-6">
             <h1 className="text-white font-semibold text-4xl">Payments made Easier!</h1>
             <p className="text-white text-lg flex gap-2 items-start justify-center"> 
-              <div>
+              <span>
                 <FaArrowRight color="white" size={20}/>
-              </div>
+              </span>
               Manage your payments securely, anywhere, anytime. Transfer money 
               and monitor your transactions with ease
             </p>

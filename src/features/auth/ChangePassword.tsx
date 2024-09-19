@@ -5,26 +5,26 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useFlow } from "./context/FlowContext";
 import { Navigate } from "react-router-dom";
 
-export default function ResetPassword() {
+export default function ChangePassword() {
   const { isValidFlow } = useFlow();
   const [formData, setFormData] = useState({
-    password: "",
-    confirmPassword: "",
+    old_password:"",
+    new_password:"",
+    confirm: "",
   });
 
   const [errors, setErrors] = useState({
-    password: "",
-    confirmPassword: "",
+    old_password: "",
+    new_password: "",
+    confirm: "",
   });
   const [isVisible, setIsVisible] = useState(false);
   const [isVisibleConfirm, setIsVisibleConfirm] = useState(false);
 
-
-    if (!isValidFlow) {
-      // If the user didn't come from the correct flow, redirect to homepage
-      return <Navigate to="/" replace />;
-    }
-
+  if (!isValidFlow) {
+    // If the user didn't come from the correct flow, redirect to homepage
+    return <Navigate to="/" replace />;
+  }
 
   const toggleVisibility = () => setIsVisible(!isVisible);
   const toggleVisibilityConfirm = () => setIsVisibleConfirm(!isVisibleConfirm);
@@ -33,19 +33,24 @@ export default function ResetPassword() {
     let valid = true;
     const newErrors = { ...errors };
 
-
-    if (formData.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters";
+    if (formData.old_password.length < 8) {
+      newErrors.old_password = "Password must be at least 8 characters";
       valid = false;
     } else {
-      newErrors.password = "";
+      newErrors.old_password = "";
+    }
+    if (formData.new_password.length < 8) {
+      newErrors.new_password = "Password must be at least 8 characters";
+      valid = false;
+    } else {
+      newErrors.new_password = "";
     }
 
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
+    if (formData.new_password !== formData.confirm) {
+      newErrors.confirm = "Passwords do not match";
       valid = false;
     } else {
-      newErrors.confirmPassword = "";
+      newErrors.confirm = "";
     }
 
     setErrors(newErrors);
@@ -89,7 +94,42 @@ export default function ResetPassword() {
             <Input
               placeholder="Password"
               name="password"
-              value={formData.password}
+              value={formData.old_password}
+              onChange={handleChange}
+              type={isVisible ? "text" : "password"}
+              startContent={
+                <CiLock
+                  color="#264653"
+                  className="text-xl text-default-400 pointer-events-none flex-shrink-0 "
+                />
+              }
+              endContent={
+                <button
+                  className="focus:outline-none"
+                  type="button"
+                  onClick={toggleVisibility}
+                  aria-label="toggle password visibility"
+                >
+                  {isVisible ? (
+                    <FaRegEyeSlash
+                      color="#264653"
+                      className="text-xl text-default-400 pointer-events-none"
+                    />
+                  ) : (
+                    <FaRegEye
+                      color="#264653"
+                      className="text-xl text-default-400 pointer-events-none"
+                    />
+                  )}
+                </button>
+              }
+              className="w-full"
+              size="lg"
+            />
+            <Input
+              placeholder="Password"
+              name="password"
+              value={formData.new_password}
               onChange={handleChange}
               type={isVisible ? "text" : "password"}
               startContent={
@@ -123,8 +163,8 @@ export default function ResetPassword() {
             />
             <Input
               placeholder="Confirm Password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
+              name="confirm"
+              value={formData.confirm}
               onChange={handleChange}
               type={isVisibleConfirm ? "text" : "password"}
               startContent={

@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Input } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import { IoMail, IoPersonOutline } from "react-icons/io5";
 import { CiLock } from "react-icons/ci";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { BsTelephoneForward } from "react-icons/bs";
+import useRegister from "./services/useRegister";
+import { RegisterCredentials } from "../../utils/types";
+import CustomInput from "../../components/CustomInput";
+import { toast } from "react-toastify";
+import Logo from "../../components/Logo";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -29,13 +34,31 @@ export default function Register() {
     confirmPassword: "",
   });
 
-  const [isVisible, setIsVisible] = useState(false);
   const [isVisibleConfirm, setIsVisibleConfirm] = useState(false);
+  const { mutate, isPending } = useRegister();
 
+  const handleNavigateToLogin = useCallback(() => {
+    navigate("/login");
+  }, [navigate]);
+
+  const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
-  const toggleVisibilityConfirm = () => setIsVisibleConfirm(!isVisibleConfirm);
+  const toggleVisibilityConfirm = useCallback(
+    () => setIsVisibleConfirm((prev) => !prev),
+    []
+  );
 
-  const validateStep1 = () => {
+  // Memoized input change handler with debouncing
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  }, []);
+
+  // Step 1 validation
+  const validateStep1 = useCallback(() => {
     let valid = true;
     const newErrors = { ...errors };
 
@@ -60,13 +83,6 @@ export default function Register() {
       newErrors.email = "";
     }
 
-    if (formData.username.length < 3) {
-      newErrors.username = "Username must be at least 3 characters";
-      valid = false;
-    } else {
-      newErrors.username = "";
-    }
-
     if (formData.telephone.length < 10) {
       newErrors.telephone = "Telephone must be at least 10 digits";
       valid = false;
@@ -75,12 +91,27 @@ export default function Register() {
     }
 
     setErrors(newErrors);
-    return valid;
-  };
 
-  const validateStep2 = () => {
+    Object.keys(newErrors).forEach((key) => {
+      if (newErrors[key as keyof typeof newErrors]) {
+        toast.error(newErrors[key as keyof typeof newErrors], { toastId: key });
+      }
+    });
+
+    return valid;
+  }, [formData, errors]);
+
+  // Step 2 validation
+  const validateStep2 = useCallback(() => {
     let valid = true;
     const newErrors = { ...errors };
+
+    if (formData.username.length < 3) {
+      newErrors.username = "Username must be at least 3 characters";
+      valid = false;
+    } else {
+      newErrors.username = "";
+    }
 
     if (formData.password.length < 8) {
       newErrors.password = "Password must be at least 8 characters";
@@ -97,97 +128,98 @@ export default function Register() {
     }
 
     setErrors(newErrors);
+
+    Object.keys(newErrors).forEach((key) => {
+      if (newErrors[key as keyof typeof newErrors]) {
+        toast.error(newErrors[key as keyof typeof newErrors], { toastId: key });
+      }
+    });
+
     return valid;
-  };
+  }, [formData, errors]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
 
-  const handleNextStep = () => {
+  const handleNextStep = useCallback(() => {
     if (validateStep1()) {
       setStep(2);
-    }
-  };
+    } 
+  }, [validateStep1]);
 
-  const handlePreviousStep = () => {
+  const handlePreviousStep = useCallback(() => {
     setStep(1);
-  };
+  }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
 
-    if (validateStep2()) {
-      console.log(formData);
-      // Add form submission logic (e.g., API call)
-    }
-  };
+      if (validateStep2()) {
+        const newData: RegisterCredentials = {
+          firstName: formData.firstname,
+          lastName: formData.lastname,
+          phone: formData.telephone,
+          ...formData,
+        };
+
+        mutate(newData);
+      }
+    },
+    [validateStep2, formData, mutate]
+  );
 
   return (
     <div className="w-full h-full flex items-center lg:items-start justify-center flex-col">
       <div className="h-full w-full max-w-[60%] md:max-w-[50%] lg:max-w-full flex items-center lg:items-start justify-center lg:px-36 gap-2 lg:gap-3 flex-col lg:py-12">
-        <div className="w-full md:max-w-lg my-4">
-          <h1 className="text-primary text-2xl text-left flex gap-2 font-semibold lg:text-2xl">
-            <img src="/Logo.svg" alt="Trustlink" /> Trustlink
-          </h1>
-        </div>
+        <Logo/>
         <div className="w-full">
           <h1 className="lg:text-4xl text-xl font-medium">
             Control Your Payments, Join Us Today!
           </h1>
         </div>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="w-full">
           <p className="text-slate-500">
             Fill the form below to create an account
           </p>
 
           {step === 1 && (
-            <div className="py-6 space-y-6 max-w-xs md:max-w-lg lg:max-w-full">
+            <div className="py-6 space-y-6 max-w-xs md:max-w-sm">
               <div className="flex gap-2">
-                <Input
-                  placeholder="Firstname"
-                  type="text"
+                <CustomInput
                   name="firstname"
                   value={formData.firstname}
-                  onChange={handleChange}
-                  size="lg"
-                />
-                <Input
-                  placeholder="Lastname"
+                  placeholder="Firstname"
                   type="text"
+                  handleChange={handleChange}
+                />
+                <CustomInput
                   name="lastname"
                   value={formData.lastname}
-                  onChange={handleChange}
-                  size="lg"
+                  placeholder="Lastname"
+                  type="text"
+                  handleChange={handleChange}
                 />
               </div>
-              <Input
-                placeholder="Email"
-                type="email"
+              <CustomInput
                 name="email"
                 value={formData.email}
-                onChange={handleChange}
-                startContent={<IoMail color="#264653" className="text-xl" />}
-                size="lg"
+                placeholder="Email"
+                type="email"
+                handleChange={handleChange}
+                startIcon={<IoMail color="#264653" className="text-xl" />}
               />
-              <Input
-                placeholder="Telephone"
-                type="telephone"
+              <CustomInput
                 name="telephone"
                 value={formData.telephone}
-                onChange={handleChange}
-                startContent={
+                placeholder="Telephone"
+                type="telephone"
+                handleChange={handleChange}
+                startIcon={
                   <BsTelephoneForward color="#264653" className="text-xl" />
                 }
-                size="lg"
               />
               <Button
                 onClick={handleNextStep}
-                className="bg-primary font-semibold w-full rounded-none"
+                className="bg-primary outline-none font-semibold data-[focus-visible=true]:outline-0 text-white w-full rounded-none"
                 size="lg"
               >
                 Next
@@ -196,62 +228,52 @@ export default function Register() {
           )}
 
           {step === 2 && (
-            <div className="py-6 space-y-6 w-full max-w-xs md:max-w-lg lg:max-w-[90%]">
-              <Input
-                placeholder="Username"
-                type="text"
+            <div className="py-6 space-y-6 w-full max-w-xs md:max-w-sm">
+              <CustomInput
                 name="username"
                 value={formData.username}
-                onChange={handleChange}
-                startContent={
+                placeholder="Username"
+                type="text"
+                handleChange={handleChange}
+                startIcon={
                   <IoPersonOutline color="#264653" className="text-xl" />
                 }
-                size="lg"
               />
+
               <div className="flex gap-2">
-                <Input
-                  placeholder="Password"
+                <CustomInput
                   name="password"
                   value={formData.password}
-                  onChange={handleChange}
+                  placeholder="Password"
                   type={isVisible ? "text" : "password"}
-                  startContent={<CiLock color="#264653" className="text-xl" />}
-                  endContent={
+                  handleChange={handleChange}
+                  startIcon={<CiLock color="#264653" className="text-xl" />}
+                  endIcon={
                     <button
                       className="focus:outline-none"
                       type="button"
                       onClick={toggleVisibility}
                     >
-                      {isVisible ? (
-                        <FaRegEyeSlash color="#264653" className="text-xl" />
-                      ) : (
-                        <FaRegEye color="#264653" className="text-xl" />
-                      )}
+                      {isVisible ? <FaRegEyeSlash /> : <FaRegEye />}
                     </button>
                   }
-                  size="lg"
                 />
-                <Input
-                  placeholder="Confirm Password"
+                <CustomInput
                   name="confirmPassword"
                   value={formData.confirmPassword}
-                  onChange={handleChange}
+                  placeholder="Confirm Password"
                   type={isVisibleConfirm ? "text" : "password"}
-                  startContent={<CiLock color="#264653" className="text-xl" />}
-                  endContent={
+                  handleChange={handleChange}
+                  startIcon={<CiLock color="#264653" className="text-xl" />}
+                  endIcon={
                     <button
                       className="focus:outline-none"
                       type="button"
                       onClick={toggleVisibilityConfirm}
                     >
-                      {isVisibleConfirm ? (
-                        <FaRegEyeSlash color="#264653" className="text-xl" />
-                      ) : (
-                        <FaRegEye color="#264653" className="text-xl" />
-                      )}
+                      {isVisibleConfirm ? <FaRegEyeSlash /> : <FaRegEye />}
                     </button>
                   }
-                  size="lg"
                 />
               </div>
               <div className="flex gap-4">
@@ -264,10 +286,11 @@ export default function Register() {
                 </Button>
                 <Button
                   type="submit"
+                  isLoading={isPending}
                   className="bg-primary font-semibold w-full rounded-none"
                   size="lg"
                 >
-                  Register
+                  {isPending ? "" : "Register"}
                 </Button>
               </div>
             </div>
@@ -277,7 +300,7 @@ export default function Register() {
               Already have an account?{" "}
               <span
                 className="font-medium text-primary cursor-pointer hover:opacity-80"
-                onClick={() => navigate("/login")}
+                onClick={handleNavigateToLogin}
               >
                 Sign in
               </span>
