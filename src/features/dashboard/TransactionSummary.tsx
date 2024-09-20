@@ -9,12 +9,13 @@ import {
   Chip,
   ChipProps,
   Button,
+  useDisclosure,
 } from "@nextui-org/react";
 import { useCallback } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { columns, users } from "../../utils/helpers";
-import { IoMenuOutline } from "react-icons/io5";
+import TransactionOverview from "./TransactionOverview";
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
   active: "success",
@@ -24,8 +25,8 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
 
 type User = (typeof users)[0];
 
-
 export default function TransactionSummary() {
+  const { isOpen, onOpenChange, onOpen } = useDisclosure();
   const renderCell = useCallback((user: User, columnKey: React.Key) => {
     const cellValue = user[columnKey as keyof User];
 
@@ -60,8 +61,6 @@ export default function TransactionSummary() {
             {cellValue}
           </Chip>
         );
-      case "actions":
-        return <IoMenuOutline />;
       default:
         return cellValue;
     }
@@ -83,19 +82,26 @@ export default function TransactionSummary() {
         isHeaderSticky
         aria-label="Table for Transactions"
         classNames={{
-          base: "max-h-[400px] overflow-y-scroll shadow-none",
-          table: "min-h-[400px] shadow-none",
-          thead: "text-sm text-primary"
+          base: "max-h-[40rem] oflow-y-scroll shadow-none",
+          th: "bg-white shadow-0",
+          tr: "cursor-pointer hover:opacity-90",
+          thead: "shadow-0"
         }}
       >
         <TableHeader columns={columns}>
           {(column) => (
-            <TableColumn align="start" key={column.uid}>{column.name}</TableColumn>
+            <TableColumn
+              align="start"
+              className="text-md text-primary bg-white"
+              key={column.uid}
+            >
+              {column.name}
+            </TableColumn>
           )}
         </TableHeader>
         <TableBody items={users}>
           {(item) => (
-            <TableRow key={item.id}>
+            <TableRow onClick={onOpen} key={item.id}>
               {(columnKey) => (
                 <TableCell>{renderCell(item, columnKey)}</TableCell>
               )}
@@ -103,6 +109,7 @@ export default function TransactionSummary() {
           )}
         </TableBody>
       </Table>
+      <TransactionOverview isOpen={isOpen} onOpenChange={onOpenChange} />
     </div>
   );
 }
