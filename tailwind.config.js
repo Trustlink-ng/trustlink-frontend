@@ -17,7 +17,7 @@ module.exports = {
     },
     extend: {
       colors: {
-        primary: "#264653",
+        primary: "#3554AE",
         main:"#E6E5E5"
       },
       animation: {

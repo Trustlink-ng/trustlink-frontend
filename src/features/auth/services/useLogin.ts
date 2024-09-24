@@ -9,7 +9,7 @@ import { setTokenWithExpiry } from "../../../utils/helpers";
 const login = async (loginData: LoginCredentials): Promise<LoginResponse> => {
   // Remove any existing token before login
   delete axiosInstance.defaults.headers.common["Authorization"];
-  console.log(loginData)
+  console.log(loginData);
   const { data } = await axiosInstance.post<LoginResponse>(
     "/auth/login",
     loginData
@@ -48,10 +48,10 @@ export default function useLogin() {
           toastId: data.message,
         });
       } else if (data.response?.status === 401) {
-         toast.error("Invalid username or password", {
-           toastId: data.message,
-         });
-      } 
+        toast.error("Invalid username or password", {
+          toastId: data.message,
+        });
+      }
     },
   });
 }

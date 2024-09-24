@@ -1,15 +1,36 @@
 import { Card, CardBody } from "@nextui-org/card";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  Legend,
+} from "recharts";
+import useGetAllTransactions from "../transactions/services/useGetAllTransactions";
 
 export default function Chart() {
-  const data = [
-    { name: "Group A", value: 400 },
-    { name: "Group B", value: 300 },
-    { name: "Group C", value: 300 },
-    { name: "Group D", value: 200 },
-  ];
+  const { data } = useGetAllTransactions();
+  const transactions = data?.data;
+  const groupedByStatus = transactions?.reduce((acc, transaction) => {
+    const { status, amount } = transaction;
 
-  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+    if (!acc[status]) {
+      acc[status] = 0; // Initialize if not present
+    }
+
+    acc[status] += amount; // Sum up the amounts for each status
+    return acc;
+  }, {} as Record<string, number>);
+
+  const formattedData = Object.entries(groupedByStatus ?? {}).map(([status, value]) => ({
+    name: status,
+    value: value,
+  }));
+
+  const COLORS = ["#FFBB28", "#FF8042", "#0088FE", "#00C49F"];
+
+
   return (
     <div className="w-full h-full">
       <Card className=" w-full h-full">
@@ -17,7 +38,7 @@ export default function Chart() {
           <ResponsiveContainer width="100%" height={240}>
             <PieChart>
               <Pie
-                data={data}
+                data={formattedData}
                 nameKey="name"
                 dataKey="value"
                 cx="40%"
@@ -26,7 +47,7 @@ export default function Chart() {
                 startAngle={180}
                 endAngle={-180}
               >
-                {data.map((entry, index) => (
+                {formattedData.map((entry, index) => (
                   <Cell
                     key={entry.name}
                     fill={COLORS[index]}

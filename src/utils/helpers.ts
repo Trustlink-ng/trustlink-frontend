@@ -1,5 +1,6 @@
 import clsx, { ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { Transaction } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -38,66 +39,87 @@ export function getInitials(name: string): string {
   return initials;
 }
 
+type CurrencyFormatOptions = {
+  country: string;
+  balance: number;
+};
+
+export function formatBalance({ country, balance }: CurrencyFormatOptions): string {
+  let currencyCode: string;
+  let locale: string;
+
+  switch (country.toLowerCase()) {
+      case 'nigeria':
+          currencyCode = 'NGN';
+          locale = 'en-NG';
+          break;
+      case 'united states':
+          currencyCode = 'USD';
+          locale = 'en-US';
+          break;
+      case 'euro':
+          currencyCode = 'EUR';
+          locale = 'en-EU';
+          break;
+      // Add more countries and their respective currency codes and locales here
+      default:
+          currencyCode = 'USD'; // default to USD if country is not listed
+          locale = 'en-US';
+          break;
+  }
+
+
+  const formatter = new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: currencyCode,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+  });
+
+  return formatter.format(balance);
+}
+
+export const getTotalAmount = (transactions: Transaction[] | []): number => {
+  return transactions.reduce((total, transaction) => total + transaction.amount, 0);
+};
+
+export const getTransactionCount = (transactions: Transaction[] | []): string => {
+  return transactions.length.toString();
+};
+
+export const getTransactionsBetweenDates = (
+  transactions: Transaction[],
+  startDate: Date,
+  endDate: Date
+): Transaction[] => {
+  return transactions.filter((transaction) => {
+    const transactionDate = new Date(transaction.date);
+    return transactionDate >= startDate && transactionDate <= endDate;
+  });
+};
+
+
+
 const columns = [
-  { name: "S/N", uid: "id" },
-  { name: "NAME", uid: "name" },
-  { name: "ROLE", uid: "role" },
-  { name: "STATUS", uid: "status" },
-  { name: "", uid: "actions" },
+  { name: "Transaction ID", uid: "id" },
+  { name: "Sender", uid: "sender" },
+  { name: "Receiver", uid: "receiver" },
+  { name: "Amount", uid: "amount" },
+  { name: "Description", uid: "description" },
+  { name: "Date", uid: "date" },
+  { name: "Status", uid: "status" },
 ];
 
-const users = [
-  {
-    id: 1,
-    name: "Tony Reichert",
-    role: "CEO",
-    team: "Management",
-    status: "active",
-    age: "29",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-    email: "tony.reichert@example.com",
-  },
-  {
-    id: 2,
-    name: "Zoey Lang",
-    role: "Technical Lead",
-    team: "Development",
-    status: "paused",
-    age: "25",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-    email: "zoey.lang@example.com",
-  },
-  {
-    id: 3,
-    name: "Jane Fisher",
-    role: "Senior Developer",
-    team: "Development",
-    status: "active",
-    age: "22",
-    avatar: "https://i.pravatar.cc/150?u=a04258114e29026702d",
-    email: "jane.fisher@example.com",
-  },
-  {
-    id: 4,
-    name: "William Howard",
-    role: "Community Manager",
-    team: "Marketing",
-    status: "vacation",
-    age: "28",
-    avatar: "https://i.pravatar.cc/150?u=a048581f4e29026701d",
-    email: "william.howard@example.com",
-  },
-  {
-    id: 5,
-    name: "Kristen Copper",
-    role: "Sales Manager",
-    team: "Sales",
-    status: "active",
-    age: "24",
-    avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026700d",
-    email: "kristen.cooper@example.com",
-  },
+export const transactionStatuses = [
+  { value: "All", label: "All" },
+  { value: "Pending", label: "Pending" },
+  { value: "Completed", label: "Completed" },
+  { value: "Refunded", label: "Refunded" },
 ];
 
-export { columns, users };
+
+
+
+
+export { columns };
 

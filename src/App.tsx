@@ -20,6 +20,7 @@ import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
 import Cards from "./pages/Cards";
 import Settings from "./pages/Settings";
+import SetTransactionPin from "./features/wallet/SetTransactionPin";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,9 +42,11 @@ export default function App() {
               <Routes>
                 <Route element={<PageLayout />}>
                   <Route element={<ProtectedRoute />}>
+                    <Route path="/set-pin" element={<SetTransactionPin />} />
                     <Route element={<AppLayout />}>
                       <Route path="/" element={<Dashboard />} />
                       <Route path="/transactions" element={<Transactions />} />
+                      <Route path="/transactions/:id" element={<Transactions />} />
                       <Route path="/cards" element={<Cards />} />
                       <Route path="/settings" element={<Settings />} />
                     </Route>
