@@ -4,7 +4,7 @@ import { FaArrowRight } from "react-icons/fa";
 
 export default function Authentication() {
   return (
-    <div className="w-full h-full grid grid-cols-1 lg:grid-cols-2">
+    <div className="w-full h-screen grid grid-cols-1 lg:grid-cols-2">
       <div className="w-full h-full mx-auto">
         <Outlet />
       </div>
