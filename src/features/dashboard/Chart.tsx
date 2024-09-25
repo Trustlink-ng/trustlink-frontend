@@ -36,7 +36,7 @@ export default function Chart() {
     <div className="w-full h-full">
       <Card className=" w-full h-full">
         <CardBody className="flex w-full h-full justify-center items-center">
-          <ResponsiveContainer width="100%" height={240}>
+          <ResponsiveContainer width="100%" height={240} className="flex">
             <PieChart>
               <Pie
                 data={formattedData}
@@ -61,7 +61,7 @@ export default function Chart() {
                 <Legend
                   verticalAlign="middle"
                   align="right"
-                  width={250}
+                  width={200}
                   layout="vertical"
                   iconSize={16}
                   iconType="circle"

@@ -5,6 +5,7 @@ import { LoginCredentials, LoginResponse } from "../../../utils/types";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 import { setTokenWithExpiry } from "../../../utils/helpers";
+import { useAuth } from "../context/AuthContext";
 
 const login = async (loginData: LoginCredentials): Promise<LoginResponse> => {
   // Remove any existing token before login
@@ -19,12 +20,14 @@ const login = async (loginData: LoginCredentials): Promise<LoginResponse> => {
 
 export default function useLogin() {
   const navigate = useNavigate();
+  const { setIsAuthenticated } = useAuth();
 
   return useMutation({
     mutationFn: login,
     onSuccess: (data) => {
       const responseData = data.data;
       toast.success(data.message, { toastId: data.message });
+      setIsAuthenticated(true);
 
       const userData = responseData.user;
 

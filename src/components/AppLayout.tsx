@@ -32,7 +32,7 @@ export default function AppLayout() {
       </div>
       <div className="w-full h-full divide-x-1 divide-[#D1D0D0] grid grid-cols-1 lg:grid-cols-[20%_80%]">
         <SideBar />
-        <div className="w-full h-full p-6">
+        <div className="w-full h-full p-3 lg:p-6">
           <Outlet />
         </div>
       </div>
