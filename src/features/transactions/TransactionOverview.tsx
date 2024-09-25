@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -8,17 +9,21 @@ import {
 import { Button, Chip, ChipProps, Spinner } from "@nextui-org/react";
 import { formatBalance } from "../../utils/helpers";
 import useGetSingleTransactions from "./services/useGetSingleTransaction";
+import OtpInput from "../auth/OtpInput";
+import useVerifyTransaction from "./services/useVerifyTransaction";
+import { toast } from "react-toastify";
 
 export default function TransactionOverview({
   isOpen,
   onOpenChange,
-  id,
+  id, // Get the transaction ID
 }: {
   isOpen: boolean;
-  onOpenChange: (open: boolean) => void; // Ensure it expects a boolean
+  onOpenChange: (open: boolean) => void;
   id: number;
 }) {
   const { data, isLoading } = useGetSingleTransactions(id);
+  const [otp, setOtp] = useState(""); // Add OTP state
   const transaction = data?.data;
 
   const statusColorMap: Record<string, ChipProps["color"]> = {
@@ -27,13 +32,37 @@ export default function TransactionOverview({
     Refunded: "danger",
   };
 
-  const isRefundable = transaction?.type === "DEBIT";
+  const isIncoming = transaction?.type === "CREDIT" && transaction?.status !== "Completed";
+
+  // Pass the transaction ID to useVerifyTransaction
+  const { mutate, isPending } = useVerifyTransaction(id);
+
+  const handleVerify = () => {
+    if (otp.length === 4) {
+      // Call mutate with OTP
+      mutate(
+        { code: otp }, // OTP passed in as the payload
+        {
+          onSuccess: () => {
+            onOpenChange(false); // Close the modal on success
+          },
+        }
+      );
+    } else {
+      toast.error("Please enter a valid 4-digit OTP.");
+    }
+  };
 
   return (
     <div>
-      <Modal size="xl" isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalContent>
-          {(onClose) => (
+      <Modal
+        size="xl"
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        classNames={{ closeButton: "top-3 right-3" }}
+      >
+        <ModalContent className="p-3">
+          {() => (
             <>
               <ModalHeader className="flex flex-col gap-1 items-center">
                 Transaction Details
@@ -76,45 +105,66 @@ export default function TransactionOverview({
                       </div>
                     </div>
                     <div className="flex flex-col gap-2 mx-24">
-                      <div className="flex font-semibold justify-between">
+                      <div className="flex font-semibold justify-between gap-5">
                         <p>From</p>
                         <p>
-                          {transaction?.sender.firstName +
-                            " " +
-                            transaction?.sender.lastName}
+                          {transaction?.sender
+                            ? transaction?.sender.firstName +
+                              " " +
+                              transaction?.sender.lastName
+                            : "Kora Payment Link"}
                         </p>
                       </div>
-                      <div className="flex font-semibold justify-between">
+                      <div className="flex font-semibold justify-between gap-5">
                         <p>To</p>
                         <p>
-                          {transaction?.receiver.firstName +
-                            " " +
-                            transaction?.receiver.lastName}
+                          {transaction?.receiver
+                            ? transaction?.receiver.firstName +
+                              " " +
+                              transaction?.receiver.lastName
+                            : "Kora Payment Link"}
                         </p>
                       </div>
-                      <div className="flex font-semibold justify-between">
+                      <div className="flex font-semibold justify-between gap-8">
                         <p>Description</p>
-                        <p>{transaction?.description}</p>
+                        <p className="text-ellipsis overflow-hidden truncate">
+                          {" "}
+                          {typeof transaction?.description === "string"
+                            ? transaction?.description
+                            : "--"}
+                        </p>
                       </div>
                     </div>
+                    {isIncoming && (
+                      <div className="flex flex-col gap-3 items-center justify-center">
+                        <h2 className="font-semibold text-primary">
+                          Enter the code from the customer
+                        </h2>
+                        <OtpInput
+                          length={4}
+                          onChange={setOtp} // Update OTP state when changed
+                        />
+                      </div>
+                    )}
                   </>
                 )}
               </ModalBody>
-              <ModalFooter className="items-center flex justify-center">
+              <ModalFooter className="items-center flex justify-end">
                 <Button
                   color="danger"
-                  variant="shadow"
-                  onPress={() => onOpenChange(false)} // Update to use the onOpenChange function
+                  variant="bordered"
+                  onPress={() => onOpenChange(false)} // Close modal manually
                 >
                   Close
                 </Button>
-                {isRefundable && (
+                {isIncoming && (
                   <Button
                     color="primary"
                     variant="shadow"
-                    onPress={() => onOpenChange(false)} // Update to use the onOpenChange function
+                    onPress={handleVerify} // Call handleVerify on click
+                    isLoading={isPending} // Show loading spinner if request is pending
                   >
-                    Refund
+                    Verify
                   </Button>
                 )}
               </ModalFooter>

@@ -26,9 +26,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   useEffect(() => {
     const token = getTokenWithExpiry("access_token");
-    const pin = localStorage.getItem("isPinSet");
 
-    // List of routes where token expiration should not trigger a redirect
     const publicRoutes = ["/login", "/register", "/verify-email"];
 
     // Simulate token check with a loading state

@@ -92,11 +92,23 @@ export const getTransactionsBetweenDates = (
   startDate: Date,
   endDate: Date
 ): Transaction[] => {
+  // Set start date to 00:00:00
+  const normalizedStartDate = new Date(startDate);
+  normalizedStartDate.setHours(0, 0, 0, 0);
+
+  // Set end date to 23:59:59
+  const normalizedEndDate = new Date(endDate);
+  normalizedEndDate.setHours(23, 59, 59, 999);
+
   return transactions.filter((transaction) => {
     const transactionDate = new Date(transaction.date);
-    return transactionDate >= startDate && transactionDate <= endDate;
+    return (
+      transactionDate >= normalizedStartDate &&
+      transactionDate <= normalizedEndDate
+    );
   });
 };
+
 
 
 

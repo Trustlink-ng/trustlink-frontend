@@ -1,17 +1,16 @@
-import { Key, useState } from "react";
+import { Key } from "react";
 import { Tab, Tabs } from "@nextui-org/react";
 
-
 type TransactionTabsProps = {
-  currentTab: string;
-  setCurrentTab: (tab: Key) => void;
+  currentTab: string | null;
+  setCurrentTab: (tab: string) => void;
 };
 
 export default function TransactionTabs({ currentTab, setCurrentTab }: TransactionTabsProps) {
-  const tabs = ["all", "incoming", "outgoing", "refunded"]; // Your tabs
+  const tabs = ["all", "incoming", "outgoing"]; // Your tabs
 
   const handleTabChange = (tab: Key) => {
-    setCurrentTab(tab); 
+    setCurrentTab(tab as string); // Typecast to string since tabs are strings
   };
 
   return (
@@ -23,11 +22,10 @@ export default function TransactionTabs({ currentTab, setCurrentTab }: Transacti
         selectedKey={currentTab}
         onSelectionChange={handleTabChange}
       >
-        {tabs.map((tab) => <Tab className="capitalize" key={tab} value={tab} title={tab}/>)}
+        {tabs.map((tab) => (
+          <Tab className="capitalize" key={tab} value={tab} title={tab} />
+        ))}
       </Tabs>
     </div>
   );
 }
-
-
-

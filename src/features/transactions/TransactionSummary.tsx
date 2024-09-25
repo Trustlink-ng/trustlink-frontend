@@ -9,11 +9,11 @@ import {
   ChipProps,
   useDisclosure,
 } from "@nextui-org/react";
-import { useCallback} from "react";
+import { useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { columns, formatBalance } from "../../utils/helpers"; // Import columns
 import TransactionOverview from "./TransactionOverview";
-import { Transaction, TransactionTable } from "../../utils/types"; // Import Transaction type
+import { Transaction, TransactionTable, User } from "../../utils/types"; // Import Transaction type
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
   Pending: "warning",
@@ -21,30 +21,39 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
   Refunded: "danger",
 };
 
-export default function TransactionSummary({transactions }: {transactions: Transaction[] | []}) {
-  const { id } = useParams(); // Get the id from the URL
-  const navigate = useNavigate(); // For navigation when closing modal
-  const { isOpen } = useDisclosure({ isOpen: !!id }); // Open if id is present
+export default function TransactionSummary({
+  transactions,
+}: {
+  transactions: Transaction[] | [];
+}) {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { isOpen } = useDisclosure({ isOpen: !!id });
+  console.log(transactions);
 
   const selectedTransaction = transactions?.find((t) => t.id === Number(id));
 
   const handleRowClick = (transactionId: number) => {
-    navigate(`/transactions/${transactionId}`); // Navigate to the URL with the transaction ID
+    navigate(`/transactions/${transactionId}`);
   };
 
   const handleCloseModal = () => {
-    navigate("/transactions"); // Close modal by navigating back to the main transactions route
+    navigate("/transactions");
   };
 
   const renderCell = useCallback(
-    (transaction: TransactionTable, columnKey: React.Key) => {
+    (transaction: Transaction, columnKey: React.Key) => {
       const cellValue = transaction[columnKey as keyof TransactionTable];
 
       switch (columnKey) {
         case "sender":
-          return `${transaction.sender.firstName} ${transaction.sender.lastName}`;
+          return typeof cellValue === "object" && cellValue !== null
+            ? `${(cellValue as User).firstName} ${(cellValue as User).lastName}`
+            : "Kora Payment Link";
         case "receiver":
-          return `${transaction.receiver.firstName} ${transaction.receiver.lastName}`;
+          return typeof cellValue === "object" && cellValue !== null
+            ? `${(cellValue as User).firstName} ${(cellValue as User).lastName}`
+            : "Kora Payment Link";
         case "amount":
           return (
             <div
@@ -54,33 +63,43 @@ export default function TransactionSummary({transactions }: {transactions: Trans
                   : "text-red-500"
               }`}
             >
-              {formatBalance({
-                country: "Nigeria",
-                balance: cellValue,
-              })}
+              {typeof cellValue === "number"
+                ? formatBalance({ country: "Nigeria", balance: cellValue })
+                : "--"}{" "}
+              {/* Ensure that balance is a number */}
             </div>
+          );
+        case "description":
+          return (
+            <p className="text-ellipsis overflow-hidden truncate">
+              {" "}
+              {typeof cellValue === "string" ? cellValue : "--"}
+            </p>
           );
         case "status":
           return (
             <Chip
               className="capitalize"
-              color={statusColorMap[transaction.status]}
+              color={statusColorMap[transaction.status] || "default"} // Ensure fallback color
               size="sm"
               variant="flat"
             >
-              {cellValue}
+              {typeof cellValue === "string" ? cellValue : "Pending"}{" "}
+              {/* Only render if cellValue is a string */}
             </Chip>
           );
         case "date":
-          return new Date(cellValue).toLocaleString(); // Convert date to readable format
+          return typeof cellValue === "string" || typeof cellValue === "number"
+            ? new Date(cellValue).toLocaleString() // Convert valid date to readable format
+            : "--"; // Fallback if the date is not valid
         default:
-          return cellValue;
+          return typeof cellValue === "string" || typeof cellValue === "number"
+            ? cellValue
+            : "--"; // Ensure only renderable values are returned
       }
     },
     []
   );
-
-
 
   return (
     <>
@@ -106,7 +125,10 @@ export default function TransactionSummary({transactions }: {transactions: Trans
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody items={transactions} emptyContent={"No transactions to display."}>
+        <TableBody
+          items={transactions}
+          emptyContent={"No transactions to display."}
+        >
           {(item) => (
             <TableRow key={item.id} onClick={() => handleRowClick(item.id)}>
               {(columnKey) => (

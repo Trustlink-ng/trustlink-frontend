@@ -1,38 +1,42 @@
+import {useState } from "react";
+import { parseDate, getLocalTimeZone, CalendarDate } from "@internationalized/date";
+import { DatePicker } from "@nextui-org/react";
 import { TbCalculator, TbCurrencyNaira } from "react-icons/tb";
 import TransactionTabs from "../features/transactions/TransactionTabs";
 import TransactionWidget from "../features/transactions/TransactionWidget";
 import TransactionSummary from "../features/transactions/TransactionSummary";
-import { DatePicker } from "@nextui-org/react";
 import Filter from "../components/Filter";
+import useGetAllTransactions from "../features/transactions/services/useGetAllTransactions";
+import useGetIncomingTransactions from "../features/transactions/services/useGetIncomingTransactions";
+import useGetOutgoingTransactions from "../features/transactions/services/useGetOutgoingTransactions";
 import {
   getTotalAmount,
   getTransactionCount,
   getTransactionsBetweenDates,
   transactionStatuses,
 } from "../utils/helpers";
-import useGetAllTransactions from "../features/transactions/services/useGetAllTransactions";
-import useGetIncomingTransactions from "../features/transactions/services/useGetincomingTransactions";
-import useGetOutgoingTransactions from "../features/transactions/services/useGetOutgoingTransactions";
-// import useGetRefundedTransactions from "../features/transactions/services/useGetRefundedTransactions";
-import { parseDate, getLocalTimeZone } from "@internationalized/date";
-import { useState } from "react";
 
 export default function Transactions() {
   const [selectedFilter, setSelectedFilter] = useState<string>("All");
   const [currentTab, setCurrentTab] = useState<string>("all");
 
-  // Step 2: Determine which fetch function to call based on the current tab
-  let transactionData;
-  switch (currentTab) {
-    case "incoming":
-      transactionData= useGetIncomingTransactions();
-      break;
-    case "outgoing":
-      transactionData= useGetOutgoingTransactions();
-      break;
-    default:
-      transactionData= useGetAllTransactions();
-  }
+const incomingTransactions = useGetIncomingTransactions();
+const outgoingTransactions = useGetOutgoingTransactions();
+const allTransactions = useGetAllTransactions();
+
+let transactionData;
+
+switch (currentTab) {
+  case "incoming":
+    transactionData = incomingTransactions;
+    break;
+  case "outgoing":
+    transactionData = outgoingTransactions;
+    break;
+  default:
+    transactionData = allTransactions;
+}
+
 
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
@@ -48,11 +52,11 @@ export default function Transactions() {
     setSelectedFilter(value);
   };
 
-  const handleFromDateChange = (date: any) => {
+  const handleFromDateChange = (date: CalendarDate) => {
     setFromDate(date);
   };
 
-  const handleToDateChange = (date: any) => {
+  const handleToDateChange = (date: CalendarDate) => {
     setToDate(date);
   };
 

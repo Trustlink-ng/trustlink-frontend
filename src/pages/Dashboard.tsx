@@ -6,7 +6,7 @@ import useGetAllTransactions from "../features/transactions/services/useGetAllTr
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { data, error } = useGetAllTransactions();
+  const { data} = useGetAllTransactions();
   const transactions = data?.data ?? [];
 
   return (
