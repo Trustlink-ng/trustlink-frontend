@@ -6,7 +6,7 @@ import { IoSettingsOutline } from "react-icons/io5";
 
 export const MainNav = () => {
   return (
-    <nav className="text-black text-sm lg:text-lg flex flex-col items-start justify-center gap-3">
+    <nav className="text-black text-sm lg:text-lg hidden lg:flex flex-col items-start justify-center gap-3">
       <NavLink to={"/"} >
         <CiHome color="#264653" className="text-2xl" />
         <span>Dashboard</span>

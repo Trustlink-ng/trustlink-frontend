@@ -29,7 +29,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
     const publicRoutes = ["/login", "/register", "/verify-email"];
 
-    // Simulate token check with a loading state
     if (!token) {
       setIsAuthenticated(false);
 
