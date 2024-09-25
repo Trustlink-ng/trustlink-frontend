@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+  
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    width: 100%;
+    font-size: 16px;
+    transform: scale(1); /* Scale to 100% */
+    transform-origin: 0 0; /* Set the origin of scaling */
+}
+@layer components {
+
+nav > *{
+    @apply flex gap-2 w-full px-3 justify-start border-l-5 items-center text-left py-2
+}
+
+nav > a.active{
+    @apply bg-[#DFE9F7] rounded w-full border-l-5 border-primary text-primary
+}
+
+nav > a.active > * {
+    @apply  stroke-primary
+}
+}
