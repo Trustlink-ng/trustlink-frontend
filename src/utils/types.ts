@@ -133,6 +133,13 @@ export interface TransactionTable {
   status: 'Pending' | 'Completed' | 'Failed'; // Adjust according to possible statuses
 }
 
+export interface TransferRequest {
+  recipient: string;
+  amount: number;
+  description: string;
+  pin: string;
+}
+
 
 export interface AllTransactionsResponse {
   message: string;

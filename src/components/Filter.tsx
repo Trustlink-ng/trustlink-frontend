@@ -15,6 +15,7 @@ export default function Filter({ options, selectedValue, onSelectChange }: Filte
       onSelectionChange={(keys) => onSelectChange(keys.currentKey as string)}
       selectorIcon={<HiMenuAlt3 size={25} color="blue" />}
       aria-label="Filter"
+      size="lg"
     >
       {options.map((option) => (
         <SelectItem key={option.value} textValue={option.label}>

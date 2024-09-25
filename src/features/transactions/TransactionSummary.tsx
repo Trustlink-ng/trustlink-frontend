@@ -7,12 +7,10 @@ import {
   TableCell,
   Chip,
   ChipProps,
-  useDisclosure,
 } from "@nextui-org/react";
 import { useCallback } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { columns, formatBalance } from "../../utils/helpers"; // Import columns
-import TransactionOverview from "./TransactionOverview";
 import { Transaction, TransactionTable, User } from "../../utils/types"; // Import Transaction type
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
@@ -26,18 +24,11 @@ export default function TransactionSummary({
 }: {
   transactions: Transaction[] | [];
 }) {
-  const { id } = useParams();
   const navigate = useNavigate();
-  const { isOpen } = useDisclosure({ isOpen: !!id });
 
-  const selectedTransaction = transactions?.find((t) => t.id === Number(id));
 
   const handleRowClick = (transactionId: number) => {
     navigate(`/transactions/${transactionId}`);
-  };
-
-  const handleCloseModal = () => {
-    navigate("/transactions");
   };
 
   const renderCell = useCallback(
@@ -106,9 +97,9 @@ export default function TransactionSummary({
         aria-label="Table for Transactions"
         isHeaderSticky
         classNames={{
-          base: "h-full max-h-[40rem] shadow-none",
+          base: "h-full max-h-96 shadow-none",
           th: "bg-white shadow-0",
-          tr: "cursor-pointer hover:opacity-90",
+          tr: "cursor-pointer hover:opacity-90 hover:bg-slate-300 rounded-md",
           thead: "shadow-0",
           tbody: "h-full overflow-y-scroll",
         }}
@@ -138,13 +129,6 @@ export default function TransactionSummary({
         </TableBody>
       </Table>
 
-      {selectedTransaction && (
-        <TransactionOverview
-          isOpen={isOpen}
-          onOpenChange={(open) => !open && handleCloseModal()} // Close modal and navigate back
-          id={selectedTransaction.id} // Pass selected transaction ID
-        />
-      )}
     </>
   );
 }
