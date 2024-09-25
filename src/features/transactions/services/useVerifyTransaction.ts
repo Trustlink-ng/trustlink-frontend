@@ -30,9 +30,15 @@ export default function useVerifyTransaction(transactionID: number) {
     },
     onError: (data: AxiosError) => {
       console.log(data);
-      toast.error("Server Error: Please try again later", {
-        toastId: data.message,
-      });
+      if (data.response?.status == 500) {
+        toast.error("Server Error: Please try again later", {
+          toastId: data.message,
+        });
+      } else if (data.response?.status === 400) {
+        toast.error("Invalid verification code", {
+          toastId: data.message,
+        });
+      }
     },
   });
 }

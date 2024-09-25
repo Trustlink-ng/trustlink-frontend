@@ -74,8 +74,6 @@ switch (currentTab) {
     ? filteredTransactions
     : filteredTransactions.filter(transaction => transaction.status == selectedFilter);
 
-    console.log(transactionsFiltered, selectedFilter);
-
   return (
     <div className="w-full h-full flex flex-col gap-6">
       <TransactionTabs currentTab={currentTab} setCurrentTab={setCurrentTab}  />

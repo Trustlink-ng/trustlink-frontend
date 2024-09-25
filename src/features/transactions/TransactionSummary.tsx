@@ -29,7 +29,6 @@ export default function TransactionSummary({
   const { id } = useParams();
   const navigate = useNavigate();
   const { isOpen } = useDisclosure({ isOpen: !!id });
-  console.log(transactions);
 
   const selectedTransaction = transactions?.find((t) => t.id === Number(id));
 
