@@ -20,7 +20,7 @@ export default function AppLayout() {
     }
   }, []);
   return (
-    <div className="w-full h-full grid lg:grid-rows-[auto_1fr] divide-y-1 divide-[#D1D0D0] bg-main">
+    <div className="w-full h-full grid lg:grid-rows-[auto_1fr] divide-y-1  divide-[#D1D0D0] bg-main">
       <div className="w-full h-full flex justify-between items-center px-8">
         <Logo />
         <div className="flex items-center gap-6 justify-center">
@@ -30,9 +30,9 @@ export default function AppLayout() {
           <Avatar onClick={() => navigate('/settings')} className="uppercase cursor-pointer" showFallback name={getInitials(name) || ""} />
         </div>
       </div>
-      <div className="w-full h-full divide-x-1 divide-[#D1D0D0] grid grid-cols-1 lg:grid-cols-[20%_80%]">
+      <div className="w-full h-full divide-x-1 overflow-y-scroll divide-[#D1D0D0] grid grid-cols-1 lg:grid-cols-[20%_80%]">
         <SideBar />
-        <div className="w-full h-full p-3 lg:p-6">
+        <div className="w-full h-full p-3 lg:p-6 ">
           <Outlet />
         </div>
       </div>

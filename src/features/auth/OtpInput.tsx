@@ -74,7 +74,7 @@ const OtpInput: React.FC<OtpInputProps> = ({
         <input
           key={index}
           id={`otp-input-${index}`}
-          type={isNumeric ? "text" : "tel"}
+          type={isNumeric ? "password" : "tel"}
           value={value}
           onChange={(e) => handleChange(e.target.value, index)}
           onKeyDown={(e) => handleKeyDown(e, index)}
@@ -86,10 +86,10 @@ const OtpInput: React.FC<OtpInputProps> = ({
             value ? "border-primary" : "border-gray-400"
           }`}
           style={{
-            width: "40px",
-            height: "40px",
+            width: "50px",
+            height: "50px",
             textAlign: "center",
-            fontSize: "20px",
+            fontSize: "50px",
             ...inputStyle,
             pointerEvents: index > 0 && !otp[index - 1] ? "none" : "auto", // Disable pointer events for non-clickable inputs
           }}

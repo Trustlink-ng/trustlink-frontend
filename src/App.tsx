@@ -21,6 +21,7 @@ import Transactions from "./pages/Transactions";
 import Cards from "./pages/Cards";
 import Settings from "./pages/Settings";
 import SetTransactionPin from "./features/wallet/SetTransactionPin";
+import TransactionOverview from "./features/transactions/TransactionOverview";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -46,7 +47,9 @@ export default function App() {
                     <Route element={<AppLayout />}>
                       <Route path="/" element={<Dashboard />} />
                       <Route path="/transactions" element={<Transactions />} />
-                      <Route path="/transactions/:id" element={<Transactions />} />
+                      <Route path="/transactions/:id" element={<TransactionOverview />} />
+                      <Route path="/create-payment-link" element={<Dashboard />} />
+                      <Route path="/transfer" element={<Dashboard />} />
                       <Route path="/cards" element={<Cards />} />
                       <Route path="/settings" element={<Settings />} />
                     </Route>

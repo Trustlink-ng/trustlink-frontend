@@ -1,5 +1,9 @@
-import {useState } from "react";
-import { parseDate, getLocalTimeZone, CalendarDate } from "@internationalized/date";
+import { useState } from "react";
+import {
+  parseDate,
+  getLocalTimeZone,
+  CalendarDate,
+} from "@internationalized/date";
 import { DatePicker } from "@nextui-org/react";
 import { TbCalculator, TbCurrencyNaira } from "react-icons/tb";
 import TransactionTabs from "../features/transactions/TransactionTabs";
@@ -20,23 +24,22 @@ export default function Transactions() {
   const [selectedFilter, setSelectedFilter] = useState<string>("All");
   const [currentTab, setCurrentTab] = useState<string>("all");
 
-const incomingTransactions = useGetIncomingTransactions();
-const outgoingTransactions = useGetOutgoingTransactions();
-const allTransactions = useGetAllTransactions();
+  const incomingTransactions = useGetIncomingTransactions();
+  const outgoingTransactions = useGetOutgoingTransactions();
+  const allTransactions = useGetAllTransactions();
 
-let transactionData;
+  let transactionData;
 
-switch (currentTab) {
-  case "incoming":
-    transactionData = incomingTransactions;
-    break;
-  case "outgoing":
-    transactionData = outgoingTransactions;
-    break;
-  default:
-    transactionData = allTransactions;
-}
-
+  switch (currentTab) {
+    case "incoming":
+      transactionData = incomingTransactions;
+      break;
+    case "outgoing":
+      transactionData = outgoingTransactions;
+      break;
+    default:
+      transactionData = allTransactions;
+  }
 
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
@@ -60,8 +63,8 @@ switch (currentTab) {
     setToDate(date);
   };
 
-  const { data} = transactionData;
-    const transactions = data?.data || [];
+  const { data } = transactionData;
+  const transactions = data?.data || [];
 
   // Filter transactions based on selected date range
   const filteredTransactions = getTransactionsBetweenDates(
@@ -70,13 +73,16 @@ switch (currentTab) {
     toDate.toDate(getLocalTimeZone()) // Convert to Date
   );
 
-  const transactionsFiltered = selectedFilter == "All"
-    ? filteredTransactions
-    : filteredTransactions.filter(transaction => transaction.status == selectedFilter);
+  const transactionsFiltered =
+    selectedFilter == "All"
+      ? filteredTransactions
+      : filteredTransactions.filter(
+          (transaction) => transaction.status == selectedFilter
+        );
 
   return (
-    <div className="w-full h-full flex flex-col gap-6">
-      <TransactionTabs currentTab={currentTab} setCurrentTab={setCurrentTab}  />
+    <div className="w-full h-full flex flex-col  gap-8">
+      <TransactionTabs currentTab={currentTab} setCurrentTab={setCurrentTab} />
       <div className="flex gap-6">
         <TransactionWidget
           icon={<TbCurrencyNaira color="blue" size={30} />}
@@ -89,12 +95,13 @@ switch (currentTab) {
           value={getTransactionCount(filteredTransactions)}
         />
       </div>
-      <div className="w-full h-full rounded-xl flex flex-col gap-1">
-        <div className="w-full flex items-center gap-3 font-semibold py-2 px-3">
+      <div className="w-full h-full rounded-xl flex flex-col gap-4 py-6">
+        <div className="w-full flex items-center gap-3 font-semibold py-4">
           <DatePicker
             className="max-w-[150px]"
             aria-label="From Date"
             value={fromDate}
+            size="lg"
             onChange={handleFromDateChange}
           />
           <p>to</p>
@@ -102,6 +109,7 @@ switch (currentTab) {
             className="max-w-[150px]"
             aria-label="To Date"
             value={toDate}
+            size="lg"
             onChange={handleToDateChange}
           />
           <Filter
@@ -110,7 +118,7 @@ switch (currentTab) {
             onSelectChange={handleFilterChange}
           />
         </div>
-        <TransactionSummary transactions={transactionsFiltered} />
+          <TransactionSummary transactions={transactionsFiltered} />
       </div>
     </div>
   );
