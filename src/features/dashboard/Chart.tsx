@@ -8,9 +8,10 @@ import {
   Legend,
 } from "recharts";
 import useGetAllTransactions from "../transactions/services/useGetAllTransactions";
+import { Spinner } from "@nextui-org/react";
 
 export default function Chart() {
-  const { data } = useGetAllTransactions();
+  const { data , isLoading} = useGetAllTransactions();
   const transactions = data?.data;
   const groupedByStatus = transactions?.reduce((acc, transaction) => {
     const { status, amount } = transaction;
@@ -36,7 +37,7 @@ export default function Chart() {
     <div className="w-full h-full">
       <Card className=" w-full h-full">
         <CardBody className="flex w-full h-full justify-center items-center">
-          <ResponsiveContainer width="100%" height={240} className="flex">
+          {isLoading ? <Spinner/> :<ResponsiveContainer width="100%" height={240} className="flex">
             <PieChart>
               <Pie
                 data={formattedData}
@@ -68,7 +69,7 @@ export default function Chart() {
                 />
               {/* </div> */}
             </PieChart>
-          </ResponsiveContainer>
+          </ResponsiveContainer>}
         </CardBody>
       </Card>
     </div>

@@ -19,9 +19,13 @@ import { AuthProvider } from "./features/auth/context/AuthContext";
 import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
 import Cards from "./pages/Cards";
-import Settings from "./pages/Settings";
 import SetTransactionPin from "./features/wallet/SetTransactionPin";
 import TransactionOverview from "./features/transactions/TransactionOverview";
+import Wallet from "./pages/Wallet";
+import WalletSettings from "./pages/WalletSettings";
+import AccountSettings from "./pages/AccountSettings";
+import FundWallet from "./features/wallet/FundWallet";
+import Withdraw from "./features/wallet/Withdraw";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -47,11 +51,33 @@ export default function App() {
                     <Route element={<AppLayout />}>
                       <Route path="/" element={<Dashboard />} />
                       <Route path="/transactions" element={<Transactions />} />
-                      <Route path="/transactions/:id" element={<TransactionOverview />} />
-                      <Route path="/create-payment-link" element={<Dashboard />} />
+                      <Route
+                        path="/transactions/:id"
+                        element={<TransactionOverview />}
+                      />
+                      <Route
+                        path="/create-payment-link"
+                        element={<Dashboard />}
+                      />
                       <Route path="/transfer" element={<Dashboard />} />
+                      <Route path="/wallet" element={<Wallet />}>
+                        <Route index element={<FundWallet />} />
+                        <Route path="fund" element={<FundWallet />} />
+                        <Route path="withdraw" element={<Withdraw />} />
+                      </Route>
                       <Route path="/cards" element={<Cards />} />
-                      <Route path="/settings" element={<Settings />} />
+                      <Route
+                        path="/settings"
+                        element={<Navigate replace to="/settings/account" />}
+                      />
+                      <Route
+                        path="settings/wallet"
+                        element={<WalletSettings />}
+                      />
+                      <Route
+                        path="settings/account"
+                        element={<AccountSettings />}
+                      />
                     </Route>
                   </Route>
                   <Route element={<Authentication />}>

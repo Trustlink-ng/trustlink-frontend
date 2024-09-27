@@ -19,6 +19,7 @@ import {
   getTransactionsBetweenDates,
   transactionStatuses,
 } from "../utils/helpers";
+import MobileTransactionSummary from "../features/transactions/MobileTransactionSummary";
 
 export default function Transactions() {
   const [selectedFilter, setSelectedFilter] = useState<string>("All");
@@ -63,7 +64,7 @@ export default function Transactions() {
     setToDate(date);
   };
 
-  const { data } = transactionData;
+  const { data, isLoading } = transactionData;
   const transactions = data?.data || [];
 
   // Filter transactions based on selected date range
@@ -72,53 +73,70 @@ export default function Transactions() {
     fromDate.toDate(getLocalTimeZone()), // Convert to Date
     toDate.toDate(getLocalTimeZone()) // Convert to Date
   );
-
   const transactionsFiltered =
     selectedFilter == "All"
       ? filteredTransactions
       : filteredTransactions.filter(
-          (transaction) => transaction.status == selectedFilter
+          (transaction) => transaction?.status == selectedFilter
         );
 
+  console.log(transactionsFiltered);
+
   return (
-    <div className="w-full h-full flex flex-col  gap-8">
+    <div className="w-full h-full overflow-y-scroll flex flex-col lg:grid gap-6 p-4 ">
       <TransactionTabs currentTab={currentTab} setCurrentTab={setCurrentTab} />
-      <div className="flex gap-6">
+      <div className="flex gap-2 lg:gap-6">
         <TransactionWidget
-          icon={<TbCurrencyNaira color="blue" size={30} />}
+          icon={
+            <TbCurrencyNaira
+              color="blue"
+              className="text-lg md:text-xl lg:text-2xl"
+            />
+          }
           title="Transactions Value"
           value={getTotalAmount(filteredTransactions)}
         />
         <TransactionWidget
-          icon={<TbCalculator color="blue" size={30} />}
+          icon={
+            <TbCalculator
+              color="blue"
+              className="text-lg md:text-xl lg:text-2xl"
+            />
+          }
           title="Transaction Volume"
           value={getTransactionCount(filteredTransactions)}
         />
       </div>
-      <div className="w-full h-full rounded-xl flex flex-col gap-4 py-6">
-        <div className="w-full flex items-center gap-3 font-semibold py-4">
-          <DatePicker
-            className="max-w-[150px]"
-            aria-label="From Date"
-            value={fromDate}
-            size="lg"
-            onChange={handleFromDateChange}
-          />
-          <p>to</p>
-          <DatePicker
-            className="max-w-[150px]"
-            aria-label="To Date"
-            value={toDate}
-            size="lg"
-            onChange={handleToDateChange}
-          />
+      <div className="w-full h-full flex flex-col rounded-xl gap-2 lg:py-2 mb-24">
+        <div className="w-full flex flex-col md:flex-row font-semibold gap-3 py-2 md:py-4">
+          <div className="flex items-center gap-3 ">
+            <DatePicker
+              className="max-w-[160px] lg:max-w-[150px]"
+              aria-label="From Date"
+              value={fromDate}
+              size="lg"
+              onChange={handleFromDateChange}
+            />
+            <p className="text-lg">to</p>
+            <DatePicker
+              className="max-w-[160px] lg:max-w-[150px]"
+              aria-label="To Date"
+              value={toDate}
+              size="lg"
+              onChange={handleToDateChange}
+            />
+          </div>
           <Filter
             options={transactionStatuses}
             selectedValue={selectedFilter}
             onSelectChange={handleFilterChange}
           />
         </div>
-          <TransactionSummary transactions={transactionsFiltered} />
+        <TransactionSummary transactions={transactionsFiltered} />
+        <MobileTransactionSummary
+          transactions={transactionsFiltered}
+          isLoading={isLoading}
+        />
       </div>
     </div>
   );

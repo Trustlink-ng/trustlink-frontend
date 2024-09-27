@@ -18,14 +18,24 @@ body{
 @layer components {
 
 nav > *{
-    @apply flex gap-2 w-full px-3 justify-start border-l-5 items-center text-left py-2
+    @apply flex gap-2 w-full px-3 justify-start border-l-5 items-center text-left py-2 hover:bg-[#DFE9F7]
 }
 
 nav > a.active{
     @apply bg-[#DFE9F7] rounded w-full border-l-5 border-primary text-primary
 }
 
+nav > a.child  {
+    @apply  mx-6 w-[80%]
+}
+
+
 nav > a.active > * {
     @apply  stroke-primary
 }
 }
+
+.transaction-summary-container {
+    height: 100%; /* Make sure it takes up the full height of its parent */
+  }
+  

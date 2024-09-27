@@ -10,7 +10,7 @@ type FilterProps = {
 export default function Filter({ options, selectedValue, onSelectChange }: FilterProps) {
   return (
     <Select
-      className="max-w-[200px] "
+      className="max-w-[180px] lg:max-w-[200px]"
       selectedKeys={selectedValue ? [selectedValue] : undefined}
       onSelectionChange={(keys) => onSelectChange(keys.currentKey as string)}
       selectorIcon={<HiMenuAlt3 size={25} color="blue" />}

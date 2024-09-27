@@ -6,49 +6,82 @@ import {
   Card,
   Chip,
   ChipProps,
+  Input,
   Spinner,
+  Textarea,
 } from "@nextui-org/react";
 import { formatBalance } from "../../utils/helpers";
 import useGetSingleTransactions from "./services/useGetSingleTransaction";
 import OtpInput from "../auth/OtpInput";
 import useVerifyTransaction from "./services/useVerifyTransaction";
 import { toast } from "react-toastify";
-import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
+import { useParams, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
+import useRequestRefund from "./services/useRequestRefund";
+import useConfirmRefund from "./services/useConfirmRefund";
 
 export default function TransactionOverview() {
-  const { id } = useParams<{ id: string }>(); // Get the transaction ID from the URL params
+  const { id } = useParams<{ id: string }>();
   const transID = id ? +id : 1;
   const { data, isLoading } = useGetSingleTransactions(transID);
-  const [otp, setOtp] = useState(""); // Add OTP state
-  const navigate = useNavigate(); // Initialize useNavigate
+  const { mutate: requestRefund, isPending: isRequestingRefund } =
+    useRequestRefund(transID);
+  const { mutate: confirmRefund, isPending: isConfirmingRefund } =
+    useConfirmRefund(transID);
+
+  const [otp, setOtp] = useState("");
+  const [description, setDescription] = useState("");
+  const [file, setFile] = useState<File | null>(null); // State for handling file
+  const navigate = useNavigate();
   const transaction = data?.data;
   const [isIncoming, setIsIncoming] = useState(false);
-  const queryClient = useQueryClient(); // Access the QueryClient
+  const [isRefundable, setIsRefundable] = useState(false);
+  const [isRefundOpen, setIsRefundOpen] = useState(false);
+  const [isConfirmRefund, setIsConfirmRefund] = useState(false);
+  const queryClient = useQueryClient();
+  console.log(transaction);
 
   useEffect(() => {
-    setIsIncoming(transaction?.type === "CREDIT" && transaction?.status !== "Completed");
+    setIsIncoming(
+      transaction?.type === "CREDIT" &&
+        transaction?.status !== "Completed" &&
+        transaction?.status !== "Cancelled"
+    );
+    setIsRefundable(
+      transaction?.type === "DEBIT" &&
+        transaction?.status !== "Completed" &&
+        transaction?.status !== "Refunded" &&
+        transaction?.status !== "Cancelled"
+    );
+    setIsConfirmRefund(
+      transaction?.type === "DEBIT" &&
+        transaction?.status !== "Completed" &&
+        transaction?.status === "Cancelled"
+    );
   }, [transaction]);
 
   const statusColorMap: Record<string, ChipProps["color"]> = {
     Pending: "warning",
     Completed: "success",
     Refunded: "danger",
+    Cancelled: "danger",
   };
 
-  // Pass the transaction ID to useVerifyTransaction
   const { mutate, isPending } = useVerifyTransaction(transID);
+
+  const handleRefundOpen = () => {
+    setIsRefundOpen((refund) => !refund);
+  };
 
   const handleVerify = () => {
     if (otp.length === 4) {
-      // Call mutate with OTP
       mutate(
         { code: otp },
         {
           onSuccess: () => {
             setIsIncoming(false);
-            queryClient.invalidateQueries({ queryKey: ["wallet"] }); // R}}efresh wallet balance
-            queryClient.invalidateQueries({ queryKey: ["transactions"] }); // Refresh transaction history
+            queryClient.invalidateQueries({ queryKey: ["wallet"] });
+            queryClient.invalidateQueries({ queryKey: ["transactions"] });
           },
         }
       );
@@ -57,13 +90,65 @@ export default function TransactionOverview() {
     }
   };
 
+  // New handler for file input
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0] || null;
+    if (selectedFile) {
+      setFile(selectedFile);
+    }
+  };
+
+  const handleRefund = () => {
+    if (!file) {
+      toast.error("Please upload a file for the refund.");
+      return;
+    }
+
+    requestRefund(
+      {
+        reason: description,
+        proof: file, // This is the File object (e.g., from an input field)
+      },
+      {
+        onSuccess: () => {
+          setIsRefundable(false);
+          queryClient.invalidateQueries({ queryKey: ["wallet"] });
+          queryClient.invalidateQueries({ queryKey: ["transactions"] });
+          queryClient.invalidateQueries({
+            queryKey: ["transactions", transID],
+          });
+        },
+      }
+    );
+  };
+
+  const handleConfirmRefund = () => {
+    if (otp.length === 4) {
+      confirmRefund(
+        { code: otp },
+        {
+          onSuccess: () => {
+            setIsConfirmRefund(false);
+            queryClient.invalidateQueries({ queryKey: ["wallet"] });
+            queryClient.invalidateQueries({ queryKey: ["transactions"] });
+            queryClient.invalidateQueries({
+              queryKey: ["transactions", transID],
+            });
+          },
+        }
+      );
+    } else {
+      toast.error("Please enter a valid 4-digit code.");
+    }
+  };
+
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full overflow-y-scroll">
       <Breadcrumbs size="lg" color="primary" underline="active">
         <BreadcrumbItem
           key="transactions"
           isCurrent={false}
-          onClick={() => navigate("/transactions")} // Navigate to transactions
+          onClick={() => navigate("/transactions")}
         >
           Transactions
         </BreadcrumbItem>
@@ -71,8 +156,8 @@ export default function TransactionOverview() {
           Transaction Details
         </BreadcrumbItem>
       </Breadcrumbs>
-      <div className="flex items-center justify-center p-6">
-        <Card className="p-6 max-w-2xl w-[500px]">
+      <div className="flex items-center justify-center p-3 lg:p-6">
+        <Card className="p-6 lg:max-w-2xl w-full bg-transparent shadow-none  lg:shadow-lg md:w-[500px]">
           <div className="flex flex-col gap-8">
             <div className="flex flex-col gap-6 items-center">
               Transaction Details
@@ -115,10 +200,10 @@ export default function TransactionOverview() {
                       </Chip>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-4 mx-24">
+                  <div className="flex flex-col gap-4 lg:mx-16">
                     <div className="flex font-semibold justify-between gap-6">
                       <p>From</p>
-                      <p>
+                      <p className="text-primary">
                         {transaction?.sender
                           ? transaction?.sender.firstName +
                             " " +
@@ -128,7 +213,7 @@ export default function TransactionOverview() {
                     </div>
                     <div className="flex font-semibold justify-between gap-6">
                       <p>To</p>
-                      <p>
+                      <p className="text-primary">
                         {transaction?.receiver
                           ? transaction?.receiver.firstName +
                             " " +
@@ -138,7 +223,7 @@ export default function TransactionOverview() {
                     </div>
                     <div className="flex font-semibold justify-between gap-6">
                       <p>Description</p>
-                      <p className="text-ellipsis overflow-hidden truncate">
+                      <p className="text-ellipsis overflow-hidden truncate text-primary">
                         {typeof transaction?.description === "string"
                           ? transaction?.description
                           : "--"}
@@ -147,25 +232,113 @@ export default function TransactionOverview() {
                   </div>
                   {isIncoming && (
                     <div className="flex flex-col gap-3 items-center justify-center">
-                      <h2 className="font-semibold text-xl text-primary">
+                      <h2 className="font-semibold text-xl text-center text-primary">
                         Enter the code from the customer
                       </h2>
                       <OtpInput length={4} onChange={setOtp} />{" "}
-                      {/* Update OTP state when changed */}
+                    </div>
+                  )}
+                  {isConfirmRefund &&  (
+                    <div className="flex flex-col gap-3 items-center justify-center">
+                      <h2 className="font-semibold text-xl text-center text-primary">
+                        Enter the code from the merchant
+                      </h2>
+                      <OtpInput length={4} onChange={setOtp} />{" "}
+                    </div>
+                  )}
+                  {isRefundable && isRefundOpen && (
+                    <div className="flex flex-col gap-3 max-w-md px-3">
+                      <h2 className="font-semibold text-xl text-primary">
+                        Reason for Refund
+                      </h2>
+                      <div className="flex flex-col gap-3">
+                        <Textarea
+                          label="Reason"
+                          isRequired
+                          name="reason"
+                          variant="bordered"
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value)}
+                          placeholder="Enter your reason"
+                          size="lg"
+                          classNames={{ label: "text-lg" }}
+                          labelPlacement="outside"
+                          isDisabled={isRequestingRefund}
+                        />
+                        <Input
+                          label="Evidence"
+                          isRequired
+                          type="file"
+                          variant="bordered"
+                          classNames={{ label: "text-lg" }}
+                          accept="image/*"
+                          name="evidence"
+                          onChange={handleFileChange}
+                          placeholder="Upload an image as proof"
+                          size="lg"
+                          labelPlacement="outside"
+                          className="max-w-xs cursor-pointer"
+                          isDisabled={isRequestingRefund}
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
               )}
             </div>
-            <div className="items-center flex justify-center">
+            <div className="items-center flex gap-3 justify-center">
               {isIncoming && (
                 <Button
                   color="primary"
                   variant="shadow"
-                  onPress={handleVerify} // Call handleVerify on click
-                  isLoading={isPending} // Show loading spinner if request is pending
+                  size="lg"
+                  onPress={handleVerify}
+                  isLoading={isPending}
                 >
-                  Verify
+                  {isPending ? "" : "Verify"}
+                </Button>
+              )}
+              {isConfirmRefund && (
+                <Button
+                  color="primary"
+                  variant="shadow"
+                  size="lg"
+                  onPress={handleConfirmRefund}
+                  isLoading={isConfirmingRefund}
+                >
+                  {isConfirmingRefund ? "" : "Confirm Refund"}
+                </Button>
+              )}
+              {isRefundOpen && isRefundable && (
+                <>
+                  <Button
+                    color="primary"
+                    size="lg"
+                    variant="bordered"
+                    onPress={handleRefundOpen}
+                  >
+                    Cancel
+                  </Button>
+
+                  <Button
+                    color="primary"
+                    variant="shadow"
+                    size="lg"
+                    onPress={handleRefund}
+                    isLoading={isRequestingRefund}
+                  >
+                    {isRequestingRefund ? "" : "Refund"}
+                  </Button>
+                </>
+              )}
+              {!isRefundOpen && isRefundable && (
+                <Button
+                  color="primary"
+                  variant="shadow"
+                  size="lg"
+                  onPress={handleRefundOpen}
+                >
+                  Request Refund
                 </Button>
               )}
             </div>
