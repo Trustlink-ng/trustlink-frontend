@@ -1,52 +1,49 @@
 import { useState } from "react";
-import { Button, Input } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import { CiLock } from "react-icons/ci";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-import { useFlow } from "./context/FlowContext";
-import { Navigate } from "react-router-dom";
+import CustomInput from "../../components/CustomInput";
+import useChangePassword from "./services/useChangePassword";
 
 export default function ChangePassword() {
-  const { isValidFlow } = useFlow();
-  const [formData, setFormData] = useState({
-    old_password:"",
-    new_password:"",
-    confirm: "",
-  });
+  const [oldPassword, setOldPassword] = useState<string>("");
+  const [newPassword, setNewPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const { mutate, isPending } = useChangePassword();
 
   const [errors, setErrors] = useState({
     old_password: "",
     new_password: "",
     confirm: "",
   });
-  const [isVisible, setIsVisible] = useState(false);
+
+  const [isVisibleOld, setIsVisibleOld] = useState(false);
+  const [isVisibleNew, setIsVisibleNew] = useState(false);
   const [isVisibleConfirm, setIsVisibleConfirm] = useState(false);
 
-  if (!isValidFlow) {
-    // If the user didn't come from the correct flow, redirect to homepage
-    return <Navigate to="/" replace />;
-  }
-
-  const toggleVisibility = () => setIsVisible(!isVisible);
+  const toggleVisibilityOld = () => setIsVisibleOld(!isVisibleOld);
+  const toggleVisibilityNew = () => setIsVisibleNew(!isVisibleNew);
   const toggleVisibilityConfirm = () => setIsVisibleConfirm(!isVisibleConfirm);
 
   const validate = () => {
     let valid = true;
     const newErrors = { ...errors };
 
-    if (formData.old_password.length < 8) {
+    if (oldPassword.length < 8) {
       newErrors.old_password = "Password must be at least 8 characters";
       valid = false;
     } else {
       newErrors.old_password = "";
     }
-    if (formData.new_password.length < 8) {
+
+    if (newPassword.length < 8) {
       newErrors.new_password = "Password must be at least 8 characters";
       valid = false;
     } else {
       newErrors.new_password = "";
     }
 
-    if (formData.new_password !== formData.confirm) {
+    if (newPassword !== confirmPassword) {
       newErrors.confirm = "Passwords do not match";
       valid = false;
     } else {
@@ -56,61 +53,57 @@ export default function ChangePassword() {
     setErrors(newErrors);
     return valid;
   };
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (validate()) {
-      console.log(formData);
-      // You can add your form submission logic here (e.g., API call)
-      // mutate(formData);
-      // reset();
+      console.log({ oldPassword, newPassword });
+      mutate({
+        old_password: oldPassword,
+        new_password: newPassword,
+        confirm: confirmPassword,
+      }, {
+        onSuccess: () => {
+          setNewPassword("")
+          setConfirmPassword("")
+          setOldPassword("")
+        }
+      });
     }
   };
 
   return (
     <div className="w-full h-full flex items-center lg:items-start justify-center flex-col">
-      <div className="h-full w-full max-w-[60%] md:max-w-[50%] lg:max-w-full flex items-center lg:items-start justify-center lg:px-36 gap-2 lg:gap-3 flex-col lg:py-12">
-        <div className="w-full md:max-w-lg my-4">
-          <h1 className="text-primary text-2xl text-left flex gap-2 font-semibold lg:text-2xl  ">
-            <img src="/Logo.svg" alt="Trustlink" /> Trustlink
-          </h1>
-        </div>
+      <div className="h-full w-full lg:max-w-full flex items-center lg:items-start justify-center lg:px-36 gap-2 lg:gap-3 flex-col lg:py-12">
         <div className="w-full">
-          <h1 className="lg:text-4xl text-xl font-medium">Reset Password</h1>
+          <h1 className="lg:text-4xl text-xl font-medium">Change Password</h1>
         </div>
         <form onSubmit={handleSubmit} className="w-full">
           <p className="text-slate-500">
             Fill the form below to reset your password
           </p>
-          <div className="py-6 space-y-4 max-w-xs md:max-w-sm">
-            <Input
-              placeholder="Password"
-              name="password"
-              value={formData.old_password}
-              onChange={handleChange}
-              type={isVisible ? "text" : "password"}
-              startContent={
+          <div className="py-6 space-y-4 max-w-sm">
+            <CustomInput
+              placeholder="Current Password"
+              name="old_password"
+              value={oldPassword}
+              handleChange={(e) => setOldPassword(e.target.value)}
+              type={isVisibleOld ? "text" : "password"}
+              startIcon={
                 <CiLock
                   color="#264653"
                   className="text-xl text-default-400 pointer-events-none flex-shrink-0 "
                 />
               }
-              endContent={
+              endIcon={
                 <button
                   className="focus:outline-none"
                   type="button"
-                  onClick={toggleVisibility}
+                  onClick={toggleVisibilityOld}
                   aria-label="toggle password visibility"
                 >
-                  {isVisible ? (
+                  {isVisibleOld ? (
                     <FaRegEyeSlash
                       color="#264653"
                       className="text-xl text-default-400 pointer-events-none"
@@ -123,29 +116,27 @@ export default function ChangePassword() {
                   )}
                 </button>
               }
-              className="w-full"
-              size="lg"
             />
-            <Input
-              placeholder="Password"
-              name="password"
-              value={formData.new_password}
-              onChange={handleChange}
-              type={isVisible ? "text" : "password"}
-              startContent={
+            <CustomInput
+              placeholder="New Password"
+              name="new_password"
+              value={newPassword}
+              handleChange={(e) => setNewPassword(e.target.value)}
+              type={isVisibleNew ? "text" : "password"}
+              startIcon={
                 <CiLock
                   color="#264653"
                   className="text-xl text-default-400 pointer-events-none flex-shrink-0 "
                 />
               }
-              endContent={
+              endIcon={
                 <button
                   className="focus:outline-none"
                   type="button"
-                  onClick={toggleVisibility}
+                  onClick={toggleVisibilityNew}
                   aria-label="toggle password visibility"
                 >
-                  {isVisible ? (
+                  {isVisibleNew ? (
                     <FaRegEyeSlash
                       color="#264653"
                       className="text-xl text-default-400 pointer-events-none"
@@ -158,22 +149,20 @@ export default function ChangePassword() {
                   )}
                 </button>
               }
-              className="w-full"
-              size="lg"
             />
-            <Input
-              placeholder="Confirm Password"
+            <CustomInput
+              handleChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm New Password"
               name="confirm"
-              value={formData.confirm}
-              onChange={handleChange}
+              value={confirmPassword}
               type={isVisibleConfirm ? "text" : "password"}
-              startContent={
+              startIcon={
                 <CiLock
                   color="#264653"
                   className="text-xl text-default-400 pointer-events-none flex-shrink-0 "
                 />
               }
-              endContent={
+              endIcon={
                 <button
                   className="focus:outline-none"
                   type="button"
@@ -193,16 +182,17 @@ export default function ChangePassword() {
                   )}
                 </button>
               }
-              className="w-full"
-              size="lg"
             />
             <Button
-              className="bg-primary w-full font-semibold rounded-none"
+              className="text-white w-full"
+              color="primary"
               size="lg"
               name="submit"
               type="submit"
+              isLoading={isPending}
+              isDisabled={isPending}
             >
-              Reset
+              Change
             </Button>
           </div>
         </form>

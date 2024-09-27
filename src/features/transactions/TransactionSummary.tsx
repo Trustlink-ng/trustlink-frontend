@@ -17,6 +17,7 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
   Pending: "warning",
   Completed: "success",
   Refunded: "danger",
+  Cancelled: "danger",
 };
 
 export default function TransactionSummary({
@@ -25,7 +26,6 @@ export default function TransactionSummary({
   transactions: Transaction[] | [];
 }) {
   const navigate = useNavigate();
-
 
   const handleRowClick = (transactionId: number) => {
     navigate(`/transactions/${transactionId}`);
@@ -40,10 +40,6 @@ export default function TransactionSummary({
           return typeof cellValue === "object" && cellValue !== null
             ? `${(cellValue as User).firstName} ${(cellValue as User).lastName}`
             : "Kora Payment Link";
-        case "receiver":
-          return typeof cellValue === "object" && cellValue !== null
-            ? `${(cellValue as User).firstName} ${(cellValue as User).lastName}`
-            : "Kora Payment Link";
         case "amount":
           return (
             <div
@@ -55,53 +51,51 @@ export default function TransactionSummary({
             >
               {typeof cellValue === "number"
                 ? formatBalance({ country: "Nigeria", balance: cellValue })
-                : "--"}{" "}
-              {/* Ensure that balance is a number */}
+                : "--"}
             </div>
           );
         case "description":
           return (
-            <p className="text-ellipsis overflow-hidden truncate">
-              {" "}
+            <p className="text-ellipsis overflow-hidden truncate w-32">
               {typeof cellValue === "string" ? cellValue : "--"}
             </p>
           );
         case "status":
           return (
             <Chip
-              className="capitalize"
-              color={statusColorMap[transaction.status] || "default"} // Ensure fallback color
+              className="capitalize lg:text-lg"
+              color={statusColorMap[transaction.status] || "default"}
               size="sm"
               variant="flat"
             >
-              {typeof cellValue === "string" ? cellValue : "Pending"}{" "}
-              {/* Only render if cellValue is a string */}
+              {typeof cellValue === "string" ? cellValue : "Pending"}
             </Chip>
           );
         case "date":
           return typeof cellValue === "string" || typeof cellValue === "number"
-            ? new Date(cellValue).toLocaleString() // Convert valid date to readable format
-            : "--"; // Fallback if the date is not valid
+            ? new Date(cellValue).toLocaleString()
+            : "--";
         default:
           return typeof cellValue === "string" || typeof cellValue === "number"
             ? cellValue
-            : "--"; // Ensure only renderable values are returned
+            : "--";
       }
     },
     []
   );
 
   return (
-    <>
       <Table
         aria-label="Table for Transactions"
         isHeaderSticky
         classNames={{
-          base: "h-full max-h-96 shadow-none",
+        base: "h-full hidden lg:flex grow lg:max-h-[520px]",
+          table: "overflow-y-scroll h-full",
           th: "bg-white shadow-0",
-          tr: "cursor-pointer hover:opacity-90 hover:bg-slate-300 rounded-md",
+          tr: "cursor-pointer hover:opacity-90 hover:bg-slate-300 rounded-md lg:text-lg",
           thead: "shadow-0",
-          tbody: "h-full overflow-y-scroll",
+          tbody: "h-full overflow-y-scroll text-xl",
+          td: "lg:text-lg",
         }}
       >
         <TableHeader columns={columns}>
@@ -128,7 +122,5 @@ export default function TransactionSummary({
           )}
         </TableBody>
       </Table>
-
-    </>
   );
 }

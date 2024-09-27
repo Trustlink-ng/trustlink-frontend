@@ -169,15 +169,15 @@ export default function Register() {
 
   return (
     <div className="w-full h-full flex items-center lg:items-start justify-center flex-col">
-      <div className="h-full w-full max-w-[60%] md:max-w-[50%] lg:max-w-full flex items-center lg:items-start justify-center lg:px-36 gap-2 lg:gap-3 flex-col lg:py-12">
+      <div className="h-full w-full max-w-[80%] md:max-w-[50%] lg:max-w-full flex items-center lg:items-start justify-center lg:px-36 gap-2 lg:gap-3 flex-col lg:py-12">
         <Logo/>
         <div className="w-full">
-          <h1 className="lg:text-4xl text-xl font-medium">
+          <h1 className="lg:text-4xl text-2xl font-medium">
             Control Your Payments, Join Us Today!
           </h1>
         </div>
         <form onSubmit={handleSubmit} className="w-full">
-          <p className="text-slate-500">
+          <p className="text-slate-500 text-lg lg:text-xl">
             Fill the form below to create an account
           </p>
 
@@ -219,7 +219,7 @@ export default function Register() {
               />
               <Button
                 onClick={handleNextStep}
-                className="bg-primary outline-none font-semibold data-[focus-visible=true]:outline-0 text-white w-full rounded-none"
+                className="bg-primary outline-none font-semibold data-[focus-visible=true]:outline-0 text-white w-full rounded-md text-lg"
                 size="lg"
               >
                 Next
@@ -279,7 +279,7 @@ export default function Register() {
               <div className="flex gap-4">
                 <Button
                   onClick={handlePreviousStep}
-                  className="bg-transparent border-2 w-full  border-primary font-semibold rounded-none"
+                  className="bg-transparent border-2 w-full  border-primary font-semibold rounded-md text-lg"
                   size="lg"
                 >
                   Previous
@@ -296,7 +296,7 @@ export default function Register() {
             </div>
           )}
           <div className="flex justify-start">
-            <p className="font-medium text-sm">
+            <p className="font-medium text-md">
               Already have an account?{" "}
               <span
                 className="font-medium text-primary cursor-pointer hover:opacity-80"

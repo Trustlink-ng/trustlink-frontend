@@ -21,6 +21,11 @@ const CustomInput: React.FC<CustomInputProps> = ({
   endIcon,
 }) => (
   <Input
+  classNames={
+    {inputWrapper: "h-16",
+      input: " text-xl"
+    }
+  }
     placeholder={placeholder}
     type={type}
     name={name}

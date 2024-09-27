@@ -8,9 +8,8 @@ export default function WalletBalance() {
   const wallet = data?.wallet ;
 
   return (
-    <div className="w-full h-full">
-      {isLoading ? (
-        <Card className="p-2 py-1 h-full rounded-lg">
+      isLoading ? (
+        <Card className="p-2 py-2 h-full rounded-lg">
           <CardHeader className="flex flex-col items-start justify-between gap-1">
             <Skeleton>
               <h3 className="capitalize text-xl font-bold text-primary">
@@ -18,12 +17,12 @@ export default function WalletBalance() {
               </h3>
             </Skeleton>
             <Skeleton>
-              <h4 className="text-5xl font-semibold"></h4>
+              <h4 className="text-5xl font-semibold">Your Wallet Balance</h4>
             </Skeleton>
           </CardHeader>
         </Card>
       ) : (
-        <Card className="p-2 py-1 h-full rounded-lg">
+        <Card className="p-2 py-5 w-full h-full rounded-lg">
           {!wallet ? (
             <CardHeader className="flex flex-col items-center justify-center h-full gap-1">
               <Button
@@ -35,12 +34,12 @@ export default function WalletBalance() {
               </Button>
             </CardHeader>
           ) : (
-            <CardHeader className="flex flex-col items-start justify-between gap-1">
+            <CardHeader className="flex flex-col items-start h-full justify-between gap-1">
               <h3 className="capitalize text-xl font-bold text-primary">
                 Your Wallet Balance
               </h3>
               <h4 className="text-2xl font-semibold">
-                <span className="text-5xl">
+                <span className="text-4xl">
                   {formatBalance({
                     country: "nigeria",
                     balance: wallet?.balance || 0,
@@ -50,7 +49,6 @@ export default function WalletBalance() {
             </CardHeader>
           )}
         </Card>
-      )}
-    </div>
+      )
   );
 }

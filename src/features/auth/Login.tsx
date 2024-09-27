@@ -83,20 +83,20 @@ export default function Login() {
 
   return (
     <div className="w-full h-full flex items-center lg:items-start justify-center flex-col">
-      <div className="h-full w-full max-w-[60%] lg:max-w-full flex items-center lg:items-start justify-center lg:px-36 gap-2 lg:gap-3 flex-col lg:py-12">
+      <div className="h-full w-full max-w-[70%] lg:max-w-full flex items-center lg:items-start justify-center lg:px-36 gap-2 lg:gap-3 flex-col lg:py-12">
         <div className="w-full my-4">
-          <h1 className="text-primary text-2xl text-left flex gap-2 font-semibold lg:text-2xl  ">
+          <h1 className="text-primary text-3xl text-left flex gap-2 font-semibold lg:text-3xl  ">
             <img src="/Logo.svg" alt="Trustlink" /> Trustlink
           </h1>
         </div>
-        <div>
-          <h1 className="lg:text-4xl text-xl font-medium">
+        <div className="w-full">
+          <h1 className="lg:text-4xl text-2xl text-left lg:text-center font-medium">
             Good to see you again today!👋
           </h1>
         </div>
         <form className="w-full" onSubmit={handleSubmit}>
-          <p className="text-slate-500">Sign in to your account to continue</p>
-          <div className="py-6 w-full space-y-4 max-w-xs md:max-w-sm">
+          <p className="text-slate-500 text-lg lg:text-xl">Sign in to your account to continue</p>
+          <div className="py-6 w-full space-y-4 max-w-xs md:max-w-md">
             <CustomInput
               name="username"
               value={formData.username}
@@ -133,7 +133,7 @@ export default function Login() {
               </p>
             </div>
             <Button
-              className="bg-primary w-full outline-none rounded-none font-semibold data-[focus-visible=true]:outline-0 text-white"
+              className="bg-primary w-full text-lg outline-none rounded-md font-semibold data-[focus-visible=true]:outline-0 text-white"
               size="lg"
               name="submit"
               type="submit"
@@ -142,7 +142,7 @@ export default function Login() {
               {isPending ? " " : "Sign in"}
             </Button>
             <div className="flex justify-start">
-              <p className="font-medium text-sm">
+              <p className="font-medium text-md">
                 Don't have an account?{" "}
                 <span
                   className="font-medium text-primary cursor-pointer hover:opacity-80"

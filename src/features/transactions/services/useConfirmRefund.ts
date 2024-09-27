@@ -3,8 +3,7 @@ import axiosInstance from "../../../utils/api";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 interface RequestRefundData {
-  reason: string;
-  proof: File;
+  code: string;
 }
 
 interface RefundResponse {
@@ -17,34 +16,25 @@ interface RefundResponse {
 }
 
 // Define the API call for requesting a refund
-const requestRefund = async ({
+const confirmRefund = async ({
   requestRefundData,
   transactionID,
 }: {
   requestRefundData: RequestRefundData;
   transactionID: number;
 }): Promise<RefundResponse> => {
-  const formData = new FormData();
-  formData.append("reason", requestRefundData.reason);
-  formData.append("proof", requestRefundData.proof);
 
-  const { data } = await axiosInstance.post<RefundResponse>(
+  const { data } = await axiosInstance.put<RefundResponse>(
     `/api/dispute-transaction/${transactionID}`,
-    formData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }
+    requestRefundData
   );
   return data;
 };
 
-// Custom hook to handle the refund request
-export default function useRequestRefund(transactionID: number) {
+export default function useConfirmRefund(transactionID: number) {
   return useMutation({
     mutationFn: (requestRefundData: RequestRefundData) =>
-      requestRefund({ requestRefundData, transactionID }),
+      confirmRefund({ requestRefundData, transactionID }),
     onSuccess: (data) => {
       toast.success(data.message, { toastId: data.message });
     },

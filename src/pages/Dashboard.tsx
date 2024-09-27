@@ -1,37 +1,28 @@
 import { useState } from "react";
 import TransactionSummary from "../features/transactions/TransactionSummary";
 import WalletSummary from "../features/dashboard/WalletSummary";
-import { Button } from "@nextui-org/react";
-import { useNavigate } from "react-router-dom";
-import useGetAllTransactions from "../features/transactions/services/useGetAllTransactions";
+import {Spinner } from "@nextui-org/react";
+ import useGetAllTransactions from "../features/transactions/services/useGetAllTransactions";
 import CreatePaymentLinkModal from "../features/dashboard/CreatePaymentLinkModal"; // Your existing modal
 import TransferFromWalletModal from "../features/dashboard/TransferFromWalletModal"; // Import the transfer modal
+import MobileTransactionSummary from "../features/transactions/MobileTransactionSummary";
 
 export default function Dashboard() {
-  const navigate = useNavigate();
-  const { data } = useGetAllTransactions();
+  const { data, isLoading } = useGetAllTransactions();
   const transactions = data?.data ?? [];
   
   // State for managing modals
   const [isCreatePaymentLinkModalOpen, setCreatePaymentLinkModalOpen] = useState(false);
   const [isTransferModalOpen, setTransferModalOpen] = useState(false); // State for transfer modal
 
+  if(!transactions) return <Spinner color="primary"/>
+
   return (
-    <div className="w-full h-full grid grid-rows-[35%_65%] gap-3 py-6 ">
+    <div className="w-full h-full overflow-y-scroll flex flex-col lg:grid gap-6 p-4 ">
       <WalletSummary />
-      <div className="w-full h-full rounded-xl flex flex-col gap-1 py-6">
-        <div className="w-full flex justify-between items-center py-2 px-3">
-          <h1 className="font-semibold text-xl">Recent History</h1>
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={() => navigate("/transactions")}
-              className="py-1 px-2 rounded-md bg-primary text-white text-base font-medium"
-            >
-              See more
-            </Button>
-          </div>
-        </div>
+    <div className="w-full h-full flex flex-col rounded-xl gap-2 lg:py-2 mb-24">
         <TransactionSummary transactions={transactions} />
+        <MobileTransactionSummary transactions={transactions} isLoading={isLoading}/>
       </div>
 
       {/* Create Payment Link Modal */}

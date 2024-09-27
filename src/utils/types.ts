@@ -15,7 +15,6 @@ export interface User {
   username: string;
 }
 
-
 export interface RegisterResponse {
   status: string;
   message: string;
@@ -74,7 +73,6 @@ export interface ResendOTPResponse {
   status: string;
 }
 
-
 export interface ChangePasswordCredentials {
   old_password: string;
   new_password: string;
@@ -85,7 +83,6 @@ export interface ChangePasswordResponse {
   message: string;
   statusCode: string;
 }
-
 
 export interface RequestPasswordResetCredentials {
   email: string;
@@ -105,8 +102,8 @@ export interface GetWalletResponse {
   wallet: {
     id: number;
     balance: number;
-    user: number
-  }
+    user: number;
+  };
 }
 
 export interface Transaction {
@@ -117,8 +114,16 @@ export interface Transaction {
   amount: number;
   type: string;
   description: string;
-  date: string; 
-  status: 'Pending' | 'Completed' | 'Failed'; // Adjust according to possible statuses
+  date: string;
+  status: "Pending" | "Completed" | "Failed" | "Refunded" | "Cancelled"; // Adjust according to possible statuses
+}
+
+export interface Wallet {
+  id: number;
+  wallet: number;
+  amount: number;
+  type: string;
+  date: string;
 }
 
 export interface TransactionTable {
@@ -129,8 +134,8 @@ export interface TransactionTable {
   amount: number;
   type: string;
   description: string;
-  date: string; 
-  status: 'Pending' | 'Completed' | 'Failed'; // Adjust according to possible statuses
+  date: string;
+  status: "Pending" | "Completed" | "Failed" | "Refunded" | "Cancelled"; // Adjust according to possible statuses
 }
 
 export interface TransferRequest {
@@ -140,12 +145,41 @@ export interface TransferRequest {
   pin: string;
 }
 
+export interface WithdrawRequest {
+  amount: number;
+  pin: string;
+}
 
 export interface AllTransactionsResponse {
   message: string;
   data: Transaction[];
 }
+
+export interface WalletHistoryResponse {
+  message: string;
+  data: Wallet[];
+}
 export interface TransactionResponse {
   message: string;
   data: Transaction;
+}
+
+export interface AccountDetailsResponse {
+  account_name: string;
+  account_number: string;
+  bank_name: string;
+  bank_code: string;
+  expiry_date_in_utc: string;
+  statusCode: number;
+}
+
+export interface GenerateAccountDetailsRequest {
+  amount: number;
+}
+
+export interface Bank {
+  id: number;
+  name: string;
+  slug: string;
+  code: string;
 }
