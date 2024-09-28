@@ -28,7 +28,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   useEffect(() => {
     const token = getTokenWithExpiry("access_token");
-    const publicRoutes = ["/login", "/register", "/verify-email"];
+    const publicRoutes = ["/login", "/register", "/verify-email", '/checkout'];
 
     // Set the authentication state based on the presence of a token
     if (!token) {

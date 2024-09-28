@@ -39,7 +39,6 @@ export default function TransactionOverview() {
   const [isRefundOpen, setIsRefundOpen] = useState(false);
   const [isConfirmRefund, setIsConfirmRefund] = useState(false);
   const queryClient = useQueryClient();
-  console.log(transaction);
 
   useEffect(() => {
     setIsIncoming(

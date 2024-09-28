@@ -11,8 +11,8 @@ export default function Authentication() {
       <div className="hidden lg:block w-full h-full bg-primary bg-auth bg-no-repeat bg-center">
         <div className="relative flex h-full w-full flex-col items-start justify-end overflow-hidden">
           <div className="p-12 space-y-6">
-            <h1 className="text-white font-semibold text-4xl">Payments made Easier!</h1>
-            <p className="text-white text-lg flex gap-2 items-start justify-center"> 
+            <h1 className="text-white font-semibold text-5xl">Payments made Easier!</h1>
+            <p className="text-white text-xl flex gap-2 items-center justify-center"> 
               <span>
                 <FaArrowRight color="white" size={20}/>
               </span>
