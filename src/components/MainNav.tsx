@@ -13,7 +13,7 @@ export const MainNav = ({ handleClose }: { handleClose?: () => void }) => {
     setIsOpen((open) => !open);
   };
   return (
-    <nav className="text-black text-sm py-6 lg:text-lg flex flex-col items-start justify-center gap-3">
+    <nav className="w-full text-black text-sm py-6 lg:text-lg flex flex-col items-start justify-center gap-3">
       <NavLink onClick={handleClose} to={"/"}>
         <CiHome color="#264653" className="text-2xl" />
         <span>Dashboard</span>

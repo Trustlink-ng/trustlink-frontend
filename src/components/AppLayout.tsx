@@ -58,7 +58,7 @@ export default function AppLayout() {
       </div>
       <div className="w-full h-full divide-x-1 pb-12 overflow-hidden divide-[#D1D0D0] grid grid-cols-1 lg:grid-cols-[20%_80%]">
         <SideBar />
-        <div className="w-full h-full overflow-auto py-4">
+        <div className="w-full h-full overflow-auto">
           <Outlet />
         </div>
       </div>

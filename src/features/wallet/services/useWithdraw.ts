@@ -6,7 +6,7 @@ import { AxiosError } from "axios";
 
 // Transfer function to call the API
 const withdrawFunds = async (withdrawData: WithdrawRequest) => {
-  const { data } = await axiosInstance.post(`/api/wallet/pay`, withdrawData);
+  const { data } = await axiosInstance.post(`/api/withdraw`, withdrawData);
   return data;
 };
 

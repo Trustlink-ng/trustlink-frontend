@@ -19,7 +19,7 @@ export default function FundWallet() {
   };
 
   return (
-    <div className="w-full h-64">
+    <div className="w-full">
       <Card className="w-full h-full p-1">
         <CardHeader className="flex items-center justify-center w-full">
           <h3 className="text-lg: lg:text-xl font-semibold text-primary">Fund Wallet</h3>

@@ -6,26 +6,38 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import PageLayout from "./components/PageLayout";
 import AppLayout from "./components/AppLayout";
 import Authentication from "./pages/Authentication";
-import Login from "./features/auth/Login";
-import Register from "./features/auth/Register";
 import NotFound from "./pages/NotFound";
-import ForgotPassword from "./features/auth/ForgotPassword";
-import VerifyEmail from "./features/auth/VerifyEmail";
-import ResetPassword from "./features/auth/ResetPassword";
-import RequestPasswordReset from "./features/auth/RequestPasswordReset";
 import { FlowProvider } from "./features/auth/context/FlowContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./features/auth/context/AuthContext";
-import Dashboard from "./pages/Dashboard";
-import Transactions from "./pages/Transactions";
-import Cards from "./pages/Cards";
-import SetTransactionPin from "./features/wallet/SetTransactionPin";
-import TransactionOverview from "./features/transactions/TransactionOverview";
-import Wallet from "./pages/Wallet";
-import WalletSettings from "./pages/WalletSettings";
-import AccountSettings from "./pages/AccountSettings";
-import FundWallet from "./features/wallet/FundWallet";
-import Withdraw from "./features/wallet/Withdraw";
+import { Suspense, lazy } from "react";
+import LoadingPage from "./components/LoadingPage";
+
+// Dynamic Imports
+const PaymentSuccessful = lazy(
+  () => import("./features/dashboard/PaymentSuccessful")
+);
+const Login = lazy(() => import("./features/auth/Login"));
+const Register = lazy(() => import("./features/auth/Register"));
+const VerifyEmail = lazy(() => import("./features/auth/VerifyEmail"));
+const ResetPassword = lazy(() => import("./features/auth/ResetPassword"));
+const RequestPasswordReset = lazy(
+  () => import("./features/auth/RequestPasswordReset")
+);
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Transactions = lazy(() => import("./pages/Transactions"));
+const Cards = lazy(() => import("./pages/Cards"));
+const SetTransactionPin = lazy(
+  () => import("./features/wallet/SetTransactionPin")
+);
+const TransactionOverview = lazy(
+  () => import("./features/transactions/TransactionOverview")
+);
+const Wallet = lazy(() => import("./pages/Wallet"));
+const WalletSettings = lazy(() => import("./pages/WalletSettings"));
+const AccountSettings = lazy(() => import("./pages/AccountSettings"));
+const FundWallet = lazy(() => import("./features/wallet/FundWallet"));
+const Withdraw = lazy(() => import("./features/wallet/Withdraw"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -44,66 +56,65 @@ export default function App() {
         <NextUIProvider>
           <AuthProvider>
             <FlowProvider>
-              <Routes>
-                <Route element={<PageLayout />}>
-                  <Route element={<ProtectedRoute />}>
-                    <Route path="/set-pin" element={<SetTransactionPin />} />
-                    <Route element={<AppLayout />}>
-                      <Route path="/" element={<Dashboard />} />
-                      <Route path="/transactions" element={<Transactions />} />
-                      <Route
-                        path="/transactions/:id"
-                        element={<TransactionOverview />}
-                      />
-                      <Route
-                        path="/create-payment-link"
-                        element={<Dashboard />}
-                      />
-                      <Route path="/transfer" element={<Dashboard />} />
-                      <Route path="/wallet" element={<Wallet />}>
-                        <Route index element={<FundWallet />} />
-                        <Route path="fund" element={<FundWallet />} />
-                        <Route path="withdraw" element={<Withdraw />} />
+              <Suspense fallback={<LoadingPage />}>
+                <Routes>
+                  <Route path="/checkout" element={<PaymentSuccessful />} />
+                  <Route element={<PageLayout />}>
+                    <Route element={<ProtectedRoute />}>
+                      <Route path="/set-pin" element={<SetTransactionPin />} />
+                      <Route element={<AppLayout />}>
+                        <Route path="/" element={<Dashboard />} />
+                        <Route
+                          path="/transactions"
+                          element={<Transactions />}
+                        />
+                        <Route
+                          path="/transactions/:id"
+                          element={<TransactionOverview />}
+                        />
+                        <Route
+                          path="/create-payment-link"
+                          element={<Dashboard />}
+                        />
+                        <Route path="/transfer" element={<Dashboard />} />
+                        <Route path="/wallet" element={<Wallet />}>
+                          <Route index element={<FundWallet />} />
+                          <Route path="fund" element={<FundWallet />} />
+                          <Route path="withdraw" element={<Withdraw />} />
+                        </Route>
+                        <Route path="/cards" element={<Cards />} />
+                        <Route
+                          path="/settings"
+                          element={<Navigate replace to="/settings/account" />}
+                        />
+                        <Route
+                          path="settings/wallet"
+                          element={<WalletSettings />}
+                        />
+                        <Route
+                          path="settings/account"
+                          element={<AccountSettings />}
+                        />
                       </Route>
-                      <Route path="/cards" element={<Cards />} />
+                    </Route>
+                    <Route element={<Authentication />}>
+                      <Route path="/login" element={<Login />} />
+                      <Route path="/register" element={<Register />} />
+                      <Route path="/verify-email" element={<VerifyEmail />} />
                       <Route
-                        path="/settings"
-                        element={<Navigate replace to="/settings/account" />}
+                        path="/request-reset"
+                        element={<RequestPasswordReset />}
                       />
                       <Route
-                        path="settings/wallet"
-                        element={<WalletSettings />}
-                      />
-                      <Route
-                        path="settings/account"
-                        element={<AccountSettings />}
+                        path="/auth/complete-reset"
+                        element={<ResetPassword />}
                       />
                     </Route>
+                    <Route element={<NotFound />} path="*" />
+                    <Route path="/home" element={<div className="">App</div>} />
                   </Route>
-                  <Route element={<Authentication />}>
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/verify-email" element={<VerifyEmail />} />
-                    <Route
-                      path="/forgot-password"
-                      element={<ForgotPassword />}
-                    />
-                    <Route
-                      path="/request-reset"
-                      element={<RequestPasswordReset />}
-                    />
-                    <Route path="/reset-password" element={<ResetPassword />} />
-                    <Route
-                      path="/auth/complete-reset"
-                      element={<Navigate replace to="/reset-password" />}
-                    />
-                  </Route>
-
-                  <Route element={<NotFound />} path="*" />
-
-                  <Route path="/home" element={<div className="">App</div>} />
-                </Route>
-              </Routes>
+                </Routes>
+              </Suspense>
             </FlowProvider>
           </AuthProvider>
         </NextUIProvider>

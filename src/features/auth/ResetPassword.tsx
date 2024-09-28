@@ -1,12 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Input } from "@nextui-org/react";
 import { CiLock } from "react-icons/ci";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-import { useFlow } from "./context/FlowContext";
-import { Navigate } from "react-router-dom";
+import { useLocation } from "react-router-dom"; // Import useLocation
+import useCompleteReset from "./services/useCompleteReset";
 
 export default function ResetPassword() {
-  const { isValidFlow } = useFlow();
   const [formData, setFormData] = useState({
     password: "",
     confirmPassword: "",
@@ -18,13 +17,18 @@ export default function ResetPassword() {
   });
   const [isVisible, setIsVisible] = useState(false);
   const [isVisibleConfirm, setIsVisibleConfirm] = useState(false);
+  const [token, setToken] = useState(""); // State to hold the token
+  const {mutate, isPending} = useCompleteReset()
 
+  // Use useLocation to get the current URL
+  const location = useLocation();
 
-    if (!isValidFlow) {
-      // If the user didn't come from the correct flow, redirect to homepage
-      return <Navigate to="/" replace />;
-    }
-
+  useEffect(() => {
+    // Get the token from the URL query parameters
+    const params = new URLSearchParams(location.search);
+    const tokenFromUrl = params.get("token");
+    setToken(tokenFromUrl || ""); // Set token state
+  }, [location]);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
   const toggleVisibilityConfirm = () => setIsVisibleConfirm(!isVisibleConfirm);
@@ -32,7 +36,6 @@ export default function ResetPassword() {
   const validate = () => {
     let valid = true;
     const newErrors = { ...errors };
-
 
     if (formData.password.length < 8) {
       newErrors.password = "Password must be at least 8 characters";
@@ -51,6 +54,7 @@ export default function ResetPassword() {
     setErrors(newErrors);
     return valid;
   };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -63,10 +67,10 @@ export default function ResetPassword() {
     e.preventDefault();
 
     if (validate()) {
+      console.log("Token:", token); // Log the token for demonstration
       console.log(formData);
       // You can add your form submission logic here (e.g., API call)
-      // mutate(formData);
-      // reset();
+      mutate({ token, confirm: formData.confirmPassword, new_password: formData.password }); // Pass token with form data for submission
     }
   };
 
@@ -74,7 +78,7 @@ export default function ResetPassword() {
     <div className="w-full h-full flex items-center lg:items-start justify-center flex-col">
       <div className="h-full w-full max-w-[60%] md:max-w-[50%] lg:max-w-full flex items-center lg:items-start justify-center lg:px-36 gap-2 lg:gap-3 flex-col lg:py-12">
         <div className="w-full md:max-w-lg my-4">
-          <h1 className="text-primary text-2xl text-left flex gap-2 font-semibold lg:text-2xl  ">
+          <h1 className="text-primary text-2xl text-left flex gap-2 font-semibold lg:text-2xl">
             <img src="/Logo.svg" alt="Trustlink" /> Trustlink
           </h1>
         </div>
@@ -95,7 +99,7 @@ export default function ResetPassword() {
               startContent={
                 <CiLock
                   color="#264653"
-                  className="text-xl text-default-400 pointer-events-none flex-shrink-0 "
+                  className="text-xl text-default-400 pointer-events-none flex-shrink-0"
                 />
               }
               endContent={
@@ -130,7 +134,7 @@ export default function ResetPassword() {
               startContent={
                 <CiLock
                   color="#264653"
-                  className="text-xl text-default-400 pointer-events-none flex-shrink-0 "
+                  className="text-xl text-default-400 pointer-events-none flex-shrink-0"
                 />
               }
               endContent={
@@ -161,6 +165,8 @@ export default function ResetPassword() {
               size="lg"
               name="submit"
               type="submit"
+              isLoading={isPending}
+              isDisabled={isPending}
             >
               Reset
             </Button>
