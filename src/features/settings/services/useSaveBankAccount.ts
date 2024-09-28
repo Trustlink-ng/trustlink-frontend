@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { toast } from "react-toastify";
+import axiosInstance from "../../../utils/api";
 
 interface SaveBankAccountData {
   code: string;
@@ -9,11 +10,12 @@ interface SaveBankAccountData {
 
 const useSaveBankAccount = () => {
   return useMutation({
-    mutationFn: async (data: SaveBankAccountData) => {
-      const response = await axios.post("/api/account", data);
-      return response.data; // This returns the response data
+    mutationFn: async (saveBank: SaveBankAccountData) => {
+      const { data } = await axiosInstance.post("/api/account", saveBank);
+      return data;
     },
     onError: (error: AxiosError) => {
+      console.log(error);
       toast.error("Error Saving bank account:", { toastId: error?.message });
     },
     onSuccess: () => {

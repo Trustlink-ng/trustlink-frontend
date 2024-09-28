@@ -35,6 +35,10 @@ export default function useTransfer() {
         toast.error("Incorrect pin", {
           toastId: "invalid-transfer",
         });
+      } else if (error.response?.status === 400) {
+        toast.error("You cannot make a transfer to yourself", {
+          toastId: "invalid-transfer",
+        });
       }
     },
   });

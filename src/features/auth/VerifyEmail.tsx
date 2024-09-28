@@ -52,7 +52,6 @@ export default function VerifyEmail() {
   // Handle form submission
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Submitting OTP and email: ", credentials);
     verify(credentials);
   };
 
@@ -84,7 +83,7 @@ export default function VerifyEmail() {
           </div>
           <div className="py-6 space-y-6 w-full">
             <div className="flex items-center justify-center">
-              <OtpInput length={6} onChange={handleOtpChange} />
+              <OtpInput id={"verify-email"} length={6} onChange={handleOtpChange} />
             </div>
             <div className="flex items-center justify-center w-full">
               <Button

@@ -11,7 +11,7 @@ import useGetAllTransactions from "../transactions/services/useGetAllTransaction
 import { Spinner } from "@nextui-org/react";
 
 export default function Chart() {
-  const { data , isLoading} = useGetAllTransactions();
+  const { data, isLoading } = useGetAllTransactions();
   const transactions = data?.data;
   const groupedByStatus = transactions?.reduce((acc, transaction) => {
     const { status, amount } = transaction;
@@ -34,43 +34,49 @@ export default function Chart() {
   const COLORS = ["#FFBB28", "#FF8042", "#0088FE", "#00C49F"];
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full">
       <Card className=" w-full h-full">
-        <CardBody className="flex w-full h-full justify-center items-center">
-          {isLoading ? <Spinner/> :<ResponsiveContainer width="100%" height={240} className="flex">
-            <PieChart>
-              <Pie
-                data={formattedData}
-                nameKey="name"
-                dataKey="value"
-                cx="40%"
-                cy="50%"
-                outerRadius={105}
-                startAngle={180}
-                endAngle={-180}
-              >
-                {formattedData.map((entry, index) => (
-                  <Cell
-                    key={entry.name}
-                    fill={COLORS[index]}
-                    stroke={COLORS[index]}
+       (
+          <CardBody className="flex w-full h-full justify-center items-center">
+            {isLoading ? (
+              <Spinner />
+            ) : (
+              <ResponsiveContainer width="100%" height={240} className="flex">
+                <PieChart>
+                  <Pie
+                    data={formattedData}
+                    nameKey="name"
+                    dataKey="value"
+                    cx="40%"
+                    cy="50%"
+                    outerRadius={105}
+                    startAngle={180}
+                    endAngle={-180}
+                  >
+                    {formattedData.map((entry, index) => (
+                      <Cell
+                        key={entry.name}
+                        fill={COLORS[index]}
+                        stroke={COLORS[index]}
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  {/* <div className="w-full"> */}
+                  <Legend
+                    verticalAlign="middle"
+                    align="right"
+                    width={200}
+                    layout="vertical"
+                    iconSize={16}
+                    iconType="circle"
                   />
-                ))}
-              </Pie>
-              <Tooltip />
-              {/* <div className="w-full"> */}
-                <Legend
-                  verticalAlign="middle"
-                  align="right"
-                  width={200}
-                  layout="vertical"
-                  iconSize={16}
-                  iconType="circle"
-                />
-              {/* </div> */}
-            </PieChart>
-          </ResponsiveContainer>}
-        </CardBody>
+                  {/* </div> */}
+                </PieChart>
+              </ResponsiveContainer>
+            )}
+          </CardBody>
+        )
       </Card>
     </div>
   );

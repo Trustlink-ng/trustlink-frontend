@@ -10,7 +10,6 @@ import { useAuth } from "../context/AuthContext";
 const login = async (loginData: LoginCredentials): Promise<LoginResponse> => {
   // Remove any existing token before login
   delete axiosInstance.defaults.headers.common["Authorization"];
-  console.log(loginData);
   const { data } = await axiosInstance.post<LoginResponse>(
     "/auth/login",
     loginData
@@ -42,10 +41,8 @@ export default function useLogin() {
       );
 
       navigate("/");
-      console.log(responseData);
     },
     onError: (data: AxiosError) => {
-      console.log(data);
       if (data.response?.status == 500) {
         toast.error("Server Error: Please try again later", {
           toastId: data.message,

@@ -12,6 +12,5 @@ export default function useGetOutgoingTransactions() {
     queryKey: ["transactions", 'outgoing'],
     queryFn: getOutgoingTransactions,
     enabled: true,
-    staleTime: 0,
   });
 }

@@ -42,13 +42,12 @@ const Withdraw = lazy(() => import("./features/wallet/Withdraw"));
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 0,
+      staleTime: 1,
     },
   },
 });
 
 export default function App() {
-  console.log(import.meta.env.VITE_API_BASE_URL);
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} position="left" />
@@ -111,7 +110,6 @@ export default function App() {
                       />
                     </Route>
                     <Route element={<NotFound />} path="*" />
-                    <Route path="/home" element={<div className="">App</div>} />
                   </Route>
                 </Routes>
               </Suspense>

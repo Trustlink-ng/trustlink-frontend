@@ -12,6 +12,5 @@ export default function useGetWalletHistory() {
     queryKey: ["wallet-history"],
     queryFn: getWalletHistory,
     enabled: true,
-    staleTime: 0,
   });
 }

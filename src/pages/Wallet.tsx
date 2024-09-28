@@ -47,7 +47,6 @@ export default function Transactions() {
 
   const { data, isLoading } = allTransactions;
   const transactions = data?.data || [];
-  console.log(transactions);
 
   // Filter transactions based on selected date range
   const filteredWalletHistory = getWalletHistoryBetweenDates(
@@ -57,11 +56,11 @@ export default function Transactions() {
   );
 
   return (
-    <div className="w-full h-full flex flex-col overflow-hidden px-3 py-4 lg:grid lg:grid-cols-2 gap-2">
+    <div className="w-full h-full flex flex-col lg:overflow-hidden px-3 md:px-6 lg:px-2 py-4 lg:grid lg:grid-cols-2 gap-6 lg:gap-2">
       <div className="w-full h-full flex flex-col gap-3 lg:gap-6">
         <div className="w-full flex flex-col xl:flex-row gap-2">
           <WalletBalance />
-          <div className="h-full w-full flex gap-3 py-3 ">
+          <div className="w-full flex gap-3 py-3 ">
             <div
               onClick={() => navigate("fund")}
               className="w-full flex flex-col items-center bg-white shadow-md rounded-lg py-6 justify-center cursor-pointer "
@@ -83,34 +82,38 @@ export default function Transactions() {
         </div>
       </div>
 
-      <div className="w-full h-full rounded-xl flex flex-col gap-2 px-3">
-        <div className="w-full flex  font-semibold gap-3">
-          <div className="flex items-center gap-3 ">
-            <DatePicker
-              className="max-w-[160px] lg:max-w-[150px]"
-              aria-label="From Date"
-              value={fromDate}
-              size="lg"
-              onChange={handleFromDateChange}
+      <div className="w-full h-full rounded-xl flex flex-col gap-6 lg:gap-2 px-3">
+        {transactions?.length !== 0 && (
+          <>
+            <div className="w-full flex  font-semibold gap-3">
+              <div className="flex items-center gap-3 ">
+                <DatePicker
+                  className="max-w-[160px] lg:max-w-[150px]"
+                  aria-label="From Date"
+                  value={fromDate}
+                  size="lg"
+                  onChange={handleFromDateChange}
+                />
+                <DatePicker
+                  className="max-w-[160px] lg:max-w-[150px]"
+                  aria-label="To Date"
+                  value={toDate}
+                  size="lg"
+                  onChange={handleToDateChange}
+                />
+              </div>
+              <Filter
+                options={transactionStatuses}
+                selectedValue={selectedFilter}
+                onSelectChange={handleFilterChange}
+              />
+            </div>
+            <WalletHistory
+              transactions={filteredWalletHistory}
+              isLoading={isLoading}
             />
-            <DatePicker
-              className="max-w-[160px] lg:max-w-[150px]"
-              aria-label="To Date"
-              value={toDate}
-              size="lg"
-              onChange={handleToDateChange}
-            />
-          </div>
-          <Filter
-            options={transactionStatuses}
-            selectedValue={selectedFilter}
-            onSelectChange={handleFilterChange}
-          />
-        </div>
-        <WalletHistory
-          transactions={filteredWalletHistory}
-          isLoading={isLoading}
-        />
+          </>
+        )}
       </div>
     </div>
   );

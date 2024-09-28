@@ -183,3 +183,15 @@ export interface Bank {
   slug: string;
   code: string;
 }
+
+export interface DisputeResponse {
+  message: string;
+  data: Dispute[];
+}
+
+export interface Dispute {
+  id: number;
+  transaction: Transaction;
+  reason: string;
+  evidence: string;
+}

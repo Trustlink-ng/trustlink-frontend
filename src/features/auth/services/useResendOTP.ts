@@ -17,12 +17,9 @@ export default function useResendOTP() {
   return useMutation({
     mutationFn: resendOTP,
     onSuccess: (data) => {
-      const responseData = data;
       toast.error(data.message, { toastId: data.message });
-      console.log(responseData);
     },
     onError: (data) => {
-      console.log(data);
       toast.error(data.message, { toastId: data.message });
     },
   });

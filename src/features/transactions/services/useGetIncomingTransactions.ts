@@ -12,6 +12,5 @@ export default function useGetIncomingTransactions() {
     queryKey: ["transactions", 'incoming'],
     queryFn: getIncomingTransactions,
     enabled: true,
-    staleTime: 0,
   });
 }
