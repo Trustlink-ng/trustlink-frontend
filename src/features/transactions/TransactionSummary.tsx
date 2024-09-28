@@ -56,7 +56,7 @@ export default function TransactionSummary({
           );
         case "description":
           return (
-            <p className="text-ellipsis overflow-hidden truncate w-32">
+            <p className="text-ellipsis overflow-hidden capitalize truncate w-32">
               {typeof cellValue === "string" ? cellValue : "--"}
             </p>
           );
@@ -85,42 +85,43 @@ export default function TransactionSummary({
   );
 
   return (
-      <Table
-        aria-label="Table for Transactions"
-        isHeaderSticky
-        classNames={{
-        base: "h-full hidden lg:flex grow lg:max-h-[520px]",
-          table: "overflow-y-scroll h-full",
-          th: "bg-white shadow-0",
-          tr: "cursor-pointer hover:opacity-90 hover:bg-slate-300 rounded-md lg:text-lg",
-          thead: "shadow-0",
-          tbody: "h-full overflow-y-scroll text-xl",
-          td: "lg:text-lg",
-        }}
+    <Table
+      aria-label="Table for Transactions"
+      isHeaderSticky
+      classNames={{
+        wrapper: "max-h-[450px]",
+        base: "h-full hidden lg:flex",
+        table: "overflow-y-scroll h-full",
+        th: "bg-white shadow-0",
+        tr: "cursor-pointer hover:opacity-90 hover:bg-slate-300 rounded-md lg:text-lg",
+        thead: "shadow-0",
+        tbody: "h-full overflow-y-scroll text-xl",
+        td: "lg:text-lg",
+      }}
+    >
+      <TableHeader columns={columns}>
+        {(column) => (
+          <TableColumn
+            align="start"
+            className="text-md text-primary bg-white"
+            key={column.uid}
+          >
+            {column.name}
+          </TableColumn>
+        )}
+      </TableHeader>
+      <TableBody
+        items={transactions}
+        emptyContent={"No transactions to display."}
       >
-        <TableHeader columns={columns}>
-          {(column) => (
-            <TableColumn
-              align="start"
-              className="text-md text-primary bg-white"
-              key={column.uid}
-            >
-              {column.name}
-            </TableColumn>
-          )}
-        </TableHeader>
-        <TableBody
-          items={transactions}
-          emptyContent={"No transactions to display."}
-        >
-          {(item) => (
-            <TableRow key={item.id} onClick={() => handleRowClick(item.id)}>
-              {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
-              )}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+        {(item) => (
+          <TableRow key={item.id} onClick={() => handleRowClick(item.id)}>
+            {(columnKey) => (
+              <TableCell>{renderCell(item, columnKey)}</TableCell>
+            )}
+          </TableRow>
+        )}
+      </TableBody>
+    </Table>
   );
 }

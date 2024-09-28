@@ -24,6 +24,5 @@ export default function useGetBank() {
     queryKey: ["bank"],
     queryFn: getBank,
     enabled: true,
-    staleTime: 0,
   });
 }

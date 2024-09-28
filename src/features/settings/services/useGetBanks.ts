@@ -19,6 +19,5 @@ export default function useGetBanks() {
   return useQuery({
     queryKey: ["banks"], // Query key includes the current URL (page)
     queryFn: () => getBanks(), // Fetch data from the provided URL
-    staleTime: 0,
   });
 }

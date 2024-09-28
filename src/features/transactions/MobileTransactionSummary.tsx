@@ -44,9 +44,9 @@ export default function MobileTransactionSummary({
   if (isLoading) return <Spinner className="lg:hidden" />;
 
   return (
-    <div className="lg:hidden w-full">
-      <ul className="h-full divide-y-1 divide-main bg-white p-2 rounded-lg">
-        {transactions?.map((transaction) => (
+    <div className="lg:hidden mac-h-[700px] w-full">
+      <ul className="h-full divide-y-2 min-h-32 divide-main bg-white px-2 py-2 rounded-lg">
+        {transactions.length == 0 ? <p className="w-full text-center h-full">No transactions</p> : transactions?.map((transaction) => (
           <li
             className="flex gap-3 bg-white px-2 py-3 cursor-pointer rounded-md hover:bg-slate-200"
             key={transaction?.id}
@@ -55,12 +55,12 @@ export default function MobileTransactionSummary({
             <div className="flex items-center w-12 h-12 px-4 py-5 bg-primary-50 rounded-full justify-center">
               <div className="text-xl">{getTransactionIcon(transaction)}</div>
             </div>
-            <div className="w-full flex justify-between gap-3">
-              <div className="flex flex-col justify-between">
-                <h3 className="text-lg font-semibold text-primary ">
+            <div className="w-full flex justify-between items-center">
+              <div className="flex flex-col  gap-1">
+                <h3 className="lg:text-lg font-semibold text-primary ">
                   {getTransactionName(transaction)}
                 </h3>
-                  <p className="text-sm w-32 font-semibold text-gray-500 text-ellipsis overflow-hidden truncate">
+                  <p className="text-sm w-32 capitalize font-semibold text-gray-500 text-ellipsis overflow-hidden truncate">
                     {transaction?.description}
                   </p>
               </div>
@@ -70,7 +70,7 @@ export default function MobileTransactionSummary({
                     transaction?.type === "CREDIT"
                       ? "text-green-500"
                       : "text-red-500"
-                  } text-lg`}
+                  } lg:text-lg`}
                 >
                   {formatBalance({
                     country: "Nigeria",
@@ -78,7 +78,7 @@ export default function MobileTransactionSummary({
                   })}
                 </p>
                   <Chip
-                    className="capitalize lg:text-lg"
+                    className="capitalize rounded-sm lg:text-lg"
                     color={statusColorMap[transaction.status] || "default"} // Ensure fallback color
                     size="sm"
                     variant="flat"

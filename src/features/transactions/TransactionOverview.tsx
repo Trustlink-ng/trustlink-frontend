@@ -19,26 +19,38 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import useRequestRefund from "./services/useRequestRefund";
 import useConfirmRefund from "./services/useConfirmRefund";
+import useGetDisputes from "./services/useGetDisputes";
 
 export default function TransactionOverview() {
   const { id } = useParams<{ id: string }>();
   const transID = id ? +id : 1;
-  const { data, isLoading } = useGetSingleTransactions(transID);
+  const { data, isLoading, isSuccess } = useGetSingleTransactions(transID);
   const { mutate: requestRefund, isPending: isRequestingRefund } =
     useRequestRefund(transID);
-  const { mutate: confirmRefund, isPending: isConfirmingRefund } =
-    useConfirmRefund(transID);
-
   const [otp, setOtp] = useState("");
   const [description, setDescription] = useState("");
   const [file, setFile] = useState<File | null>(null); // State for handling file
   const navigate = useNavigate();
-  const transaction = data?.data;
   const [isIncoming, setIsIncoming] = useState(false);
   const [isRefundable, setIsRefundable] = useState(false);
   const [isRefundOpen, setIsRefundOpen] = useState(false);
   const [isConfirmRefund, setIsConfirmRefund] = useState(false);
   const queryClient = useQueryClient();
+  const { data: disputes, isLoading: isFetchingDisputes ,error} = useGetDisputes();
+  console.log(error);
+
+  // Filter the disputes to find if there's any matching the transaction ID
+  const matchingDispute = disputes?.data.find(
+    (dispute) => dispute.transaction.id === transID
+  );
+
+  // If a dispute is found, use the transaction from the dispute; otherwise, use the single transaction data
+  const transaction = matchingDispute
+    ? matchingDispute.transaction
+    : data?.data;
+
+  const { mutate: confirmRefund, isPending: isConfirmingRefund } =
+    useConfirmRefund(matchingDispute?.id || 0);
 
   useEffect(() => {
     setIsIncoming(
@@ -140,9 +152,8 @@ export default function TransactionOverview() {
       toast.error("Please enter a valid 4-digit code.");
     }
   };
-
   return (
-    <div className="w-full h-full overflow-y-scroll">
+    <div className="w-full h-full p-4 overflow-y-scroll">
       <Breadcrumbs size="lg" color="primary" underline="active">
         <BreadcrumbItem
           key="transactions"
@@ -162,7 +173,7 @@ export default function TransactionOverview() {
               Transaction Details
             </div>
             <div className="w-full">
-              {isLoading ? (
+              {isLoading || isFetchingDisputes ? (
                 <div className="flex items-center justify-center w-full">
                   <Spinner size="lg" />
                 </div>
@@ -229,20 +240,49 @@ export default function TransactionOverview() {
                       </p>
                     </div>
                   </div>
+                  {matchingDispute && (
+                    <div className="flex flex-col gap-4 lg:mx-16">
+                      <div className="flex font-semibold justify-between gap-6">
+                        <p>Dispute Reason</p>
+                        <p className="text-primary">{matchingDispute.reason}</p>
+                      </div>
+
+                      {/* Render the dispute image if present */}
+                      {matchingDispute.evidence && (
+                        <div className="flex font-semibold justify-between gap-6">
+                          <p>Dispute Image</p>
+                          <img
+                            src={matchingDispute.evidence}
+                            alt="Dispute Evidence"
+                            className="max-w-xs rounded"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
                   {isIncoming && (
                     <div className="flex flex-col gap-3 items-center justify-center">
                       <h2 className="font-semibold text-xl text-center text-primary">
                         Enter the code from the customer
                       </h2>
-                      <OtpInput length={4} onChange={setOtp} />{" "}
+                      <OtpInput
+                        id={"confirm-incoming"}
+                        length={4}
+                        onChange={setOtp}
+                      />{" "}
                     </div>
                   )}
-                  {isConfirmRefund &&  (
+
+                  {isConfirmRefund && (
                     <div className="flex flex-col gap-3 items-center justify-center">
                       <h2 className="font-semibold text-xl text-center text-primary">
                         Enter the code from the merchant
                       </h2>
-                      <OtpInput length={4} onChange={setOtp} />{" "}
+                      <OtpInput
+                        id={"confirm-refund"}
+                        length={4}
+                        onChange={setOtp}
+                      />{" "}
                     </div>
                   )}
                   {isRefundable && isRefundOpen && (
@@ -330,7 +370,7 @@ export default function TransactionOverview() {
                   </Button>
                 </>
               )}
-              {!isRefundOpen && isRefundable && (
+              {!isRefundOpen && isRefundable && isSuccess && (
                 <Button
                   color="primary"
                   variant="shadow"

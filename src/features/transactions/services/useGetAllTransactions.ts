@@ -12,6 +12,5 @@ export default function useGetAllTransactions() {
     queryKey: ["transactions"],
     queryFn: getAllTransactions,
     enabled: true,
-    staleTime: 0,
   });
 }

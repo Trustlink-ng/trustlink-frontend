@@ -49,7 +49,6 @@ export default function useRequestRefund(transactionID: number) {
       toast.success(data.message, { toastId: data.message });
     },
     onError: (error: AxiosError) => {
-        console.log(error);
       if (error.response?.status === 500) {
         toast.error("Server Error: Please try again later", {
           toastId: error.message,

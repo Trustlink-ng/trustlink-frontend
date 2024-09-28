@@ -12,6 +12,5 @@ export default function useGetWallet() {
     queryKey: ["wallet"],
     queryFn: getWallet,
     enabled: true,
-    staleTime: 0,
   });
 }

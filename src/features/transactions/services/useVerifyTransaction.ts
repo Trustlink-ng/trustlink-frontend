@@ -29,7 +29,6 @@ export default function useVerifyTransaction(transactionID: number) {
       toast.success(data.message, { toastId: data.message });
     },
     onError: (data: AxiosError) => {
-      console.log(data);
       if (data.response?.status == 500) {
         toast.error("Server Error: Please try again later", {
           toastId: data.message,

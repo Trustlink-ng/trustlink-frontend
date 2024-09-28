@@ -21,7 +21,6 @@ export default function SetTransactionPin() {
 
       const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log("Submitting pin: ", pin);
         createWallet({"pin": pin});
       };
 
@@ -45,7 +44,7 @@ export default function SetTransactionPin() {
           </div>
           <div className="py-6 space-y-6 w-full">
             <div className="flex items-center justify-center">
-              <OtpInput length={4} onChange={handleOtpChange} />
+              <OtpInput id={"set-pin"} length={4} onChange={handleOtpChange} />
             </div>
             <div className="flex items-center justify-center w-full">
               <Button

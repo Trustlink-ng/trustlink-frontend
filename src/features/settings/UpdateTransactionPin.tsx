@@ -45,19 +45,19 @@ export default function SetTransactionPin() {
               <h2 className="font-semibold text-xl text-primary">
                 Enter your transaction PIN
               </h2>
-              <OtpInput length={4} onChange={(value) => setPin(value)} />
+              <OtpInput id={"old"} length={4} onChange={(value) => setPin(value)} />
             </div>
             <div className="flex flex-col gap-3 items-center justify-center">
               <h2 className="font-semibold text-xl text-primary">
                 Enter the new transaction PIN
               </h2>
-              <OtpInput length={4} onChange={(value) => setNewPin(value)} />
+              <OtpInput id={"new"} length={4} onChange={(value) => setNewPin(value)} />
             </div>
             <div className="flex flex-col gap-3 items-center justify-center">
               <h2 className="font-semibold text-xl text-center text-primary">
                 Confirm transaction PIN
               </h2>
-              <OtpInput length={4} onChange={(value) => setConfirm(value)}  />
+              <OtpInput id={"confirm-otp"} length={4} onChange={(value) => setConfirm(value)}  />
             </div>
             <div className="flex items-center justify-center w-full">
               <Button

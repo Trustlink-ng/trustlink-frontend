@@ -4,7 +4,7 @@ import { LiaTimesSolid } from "react-icons/lia";
 import SideBar from "./SideBar";
 import Logo from "./Logo";
 import { Avatar } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getInitials } from "../utils/helpers";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { MainNav } from "./MainNav";
@@ -14,9 +14,24 @@ export default function AppLayout() {
   const [toggle, setToggle] = useState(false);
   const navigate = useNavigate();
 
+  const navRef = useRef<HTMLDivElement>(null); // Ref to track the nav
+
   const handleToggle = () => {
     setToggle((toggle) => !toggle);
   };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (navRef.current && !navRef.current.contains(event.target as Node)) {
+      setToggle(false); // Call handleClose when clicked outside
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   // Fetch email from localStorage when component mounts
   useEffect(() => {
     const storedUserData = localStorage.getItem("user");
@@ -35,8 +50,9 @@ export default function AppLayout() {
             onClick={handleToggle}
           />
           <div
+            ref={navRef}
             className={`lg:hidden p-12 px-8 h-screen transition-all duration-1000 ${
-              toggle ? "w-[300px]" : "w-0 hidden"
+              toggle ? "w-[300px] md:w-1/2" : "w-0 hidden"
             } bg-main z-10 absolute left-0 top-0 row-span-full flex items-start flex-col]`}
           >
             <div className="absolute top-8 z-11">
@@ -49,8 +65,9 @@ export default function AppLayout() {
           </div>
           <Avatar
             onClick={() => navigate("/settings")}
-            className="uppercase hidden lg:inline-block cursor-pointer text-lg"
+            className="uppercase hidden bg-blue-200 lg:inline-block cursor-pointer text-lg"
             showFallback
+            
             name={getInitials(name) || ""}
             size="lg"
           />
@@ -58,7 +75,7 @@ export default function AppLayout() {
       </div>
       <div className="w-full h-full divide-x-1 pb-12 overflow-hidden divide-[#D1D0D0] grid grid-cols-1 lg:grid-cols-[20%_80%]">
         <SideBar />
-        <div className="w-full h-full overflow-auto">
+        <div className="w-full h-full overflow-auto ">
           <Outlet />
         </div>
       </div>

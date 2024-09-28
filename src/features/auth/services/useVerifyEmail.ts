@@ -32,7 +32,6 @@ export default function useVerifyEmail() {
       localStorage.setItem("user", JSON.stringify(responseData.user));
       toast.error(data.message, { toastId: data.message });
       navigate('/set-pin')
-      console.log(responseData);
 
     },
     onError: (data) => {

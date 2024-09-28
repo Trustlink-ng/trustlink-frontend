@@ -28,7 +28,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   useEffect(() => {
     const token = getTokenWithExpiry("access_token");
-    const publicRoutes = ["/login", "/register", "/verify-email", '/checkout'];
+    const publicRoutes = [
+      "/login",
+      "/register",
+      "/verify-email",
+      "/checkout",
+      "/auth/complete-reset",
+      "/request-reset"
+    ];
 
     // Set the authentication state based on the presence of a token
     if (!token) {
@@ -50,7 +57,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         {/* Loading spinner code */}
         <div role="status">
           {/* Spinner SVG */}
-          <svg aria-hidden="true" className="w-12 h-12 animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            aria-hidden="true"
+            className="w-12 h-12 animate-spin"
+            viewBox="0 0 100 101"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             {/* SVG paths */}
           </svg>
           <span className="sr-only">Loading...</span>
@@ -60,7 +73,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, loading, setIsAuthenticated }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, loading, setIsAuthenticated }}
+    >
       {children}
     </AuthContext.Provider>
   );

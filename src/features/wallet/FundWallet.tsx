@@ -1,7 +1,7 @@
 import { Button, Card, CardBody, CardHeader, Input } from "@nextui-org/react";
 import useGenerateAccountDetails from "./services/useGenerateAccount";
 import { TbCurrencyNaira } from "react-icons/tb";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export default function FundWallet() {
@@ -9,6 +9,14 @@ export default function FundWallet() {
   const numericAmount = +amount;
 
   const { data, isLoading, refetch } = useGenerateAccountDetails(numericAmount);
+
+  const [isInvalid, setIsInvalid] = useState(true);
+
+  useEffect(() => {
+    if (numericAmount > 0) {
+      setIsInvalid(false);
+    }
+  }, [numericAmount]);
 
   const handleGenerateAccount = () => {
     if (!numericAmount || numericAmount <= 0) {
@@ -22,7 +30,9 @@ export default function FundWallet() {
     <div className="w-full">
       <Card className="w-full h-full p-1">
         <CardHeader className="flex items-center justify-center w-full">
-          <h3 className="text-lg: lg:text-xl font-semibold text-primary">Fund Wallet</h3>
+          <h3 className="text-lg: lg:text-xl font-semibold text-primary">
+            Fund Wallet
+          </h3>
         </CardHeader>
         <CardBody className="px-6 flex justify-center items-center gap-8">
           <Input
@@ -43,17 +53,25 @@ export default function FundWallet() {
           />
           <div className="w-full flex justify-center">
             <Button
-              isDisabled={isLoading}
+              isDisabled={isLoading || isInvalid}
               color="primary"
               onPress={handleGenerateAccount}
               isLoading={isLoading}
+              
             >
-              {isLoading ? "" : data ? "Generate new account" : "Generate Account"}
+              {isLoading
+                ? ""
+                : data
+                ? "Generate new account"
+                : "Generate Account"}
             </Button>
           </div>
 
           {data && (
-            <div className="flex flex-col items-center justify-center">
+            <div className="flex gap-3 flex-col items-center justify-center">
+              <h3 className="text-xl lg:text-xl font-semibold text-primary">
+                Account Details
+              </h3>
               <div className="flex items-center justify-center">
                 <span
                   onClick={() => {

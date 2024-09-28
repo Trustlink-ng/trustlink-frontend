@@ -26,8 +26,8 @@ export default function CreatePaymentLink() {
   }, []);
 
   return (
-    <div className="flex cursor-pointer flex-col items-center rounded-md hover:bg-slate-200 p-2 justify-center">
-      <TbNewSection className="text-xl" onClick={handleOpen} />
+    <div className="flex cursor-pointer flex-col items-center w-full gap-2 text-center rounded-md hover:bg-blue-100 p-2 justify-center">
+      <TbNewSection className="text-xl" color="" onClick={handleOpen} />
       <p className="text-sm font-medium" onClick={handleOpen}>
         Create Link
       </p>

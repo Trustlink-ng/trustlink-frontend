@@ -60,7 +60,7 @@ export default function PaymentSuccessful() {
   if (loading) return <Spinner />; // Show a spinner while loading
 
   return (
-    <div className="flex h-full w-full justify-center items-center text-primary text-5xl">
+    <div className="flex h-screen w-full justify-center bg-main items-center text-primary text-5xl">
       {transactionData ? (
         <>
           <div className="text-center">
@@ -68,7 +68,7 @@ export default function PaymentSuccessful() {
             <Button
               className="bg-primary p-3"
               onPress={() =>
-                navigate("/transaction/" + transactionData.data.id)
+                navigate("/transactions/" + transactionData.data.id)
               }
             >
               View Details

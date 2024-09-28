@@ -13,6 +13,5 @@ export default function useGenerateAccountDetails(amount: number) {
       queryKey: ["accountDetails", amount], // Cache key that includes the amount
       queryFn: () => generateAccountDetails({amount}), // Fetch the account details
       enabled: false, 
-      staleTime: 0, // Customize cache time
     });
   }

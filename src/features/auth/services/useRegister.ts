@@ -5,7 +5,6 @@ import { RegisterCredentials, RegisterResponse } from "../../../utils/types";
 import { toast } from "react-toastify";
 import { useFlow } from "../context/FlowContext";
 
-
 const register = async (
   registerData: RegisterCredentials
 ): Promise<RegisterResponse> => {
@@ -18,22 +17,22 @@ const register = async (
 
 export default function useRegister() {
   const navigate = useNavigate();
-  const {setFlowValid }= useFlow();
+  const { setFlowValid } = useFlow();
 
   return useMutation({
     mutationFn: register,
     onSuccess: (data) => {
       const responseData = data.data;
-      toast.success(data.message, {toastId: data.message})
+      toast.success(data.message, { toastId: data.message });
       const userData = responseData.user;
-      
+
       localStorage.setItem("user", JSON.stringify(userData));
       setFlowValid(true);
-      navigate('/verify-email')
+      navigate("/verify-email");
       console.log(responseData);
     },
     onError: (data) => {
-      console.log(data)
+      console.log(data);
       toast.error(data.message, { toastId: data.message });
     },
   });

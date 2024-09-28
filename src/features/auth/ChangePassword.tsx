@@ -58,7 +58,6 @@ export default function ChangePassword() {
     e.preventDefault();
 
     if (validate()) {
-      console.log({ oldPassword, newPassword });
       mutate({
         old_password: oldPassword,
         new_password: newPassword,

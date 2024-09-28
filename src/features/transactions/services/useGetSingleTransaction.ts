@@ -14,6 +14,5 @@ export default function useGetSingleTransactions(transactionID: number) {
     queryKey: ["transactions", transactionID],
     queryFn: () => getSingleTransaction(transactionID),
     enabled: true,
-    staleTime: 0,
   });
 }

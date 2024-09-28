@@ -21,11 +21,11 @@ export default function WalletHistory({
   if (isLoading) return <Spinner />;
 
   return (
-    <div className="max-h-[700px] h-3/4">
-      <ul className="w-full h-full divide-y-1 divide-main bg-white p-2 rounded-lg overflow-y-scroll">
+    <div className="max-h-[700px] lg:max-h-3/4">
+      <ul className="w-full h-full divide-y-3 divide-main bg-white  rounded-lg overflow-y-scroll">
         {transactions?.map((transaction) => (
           <li
-            className="flex gap-3 bg-white px-2 py-3 rounded-md"
+            className="flex gap-3 border-2 border-main hover:bg-slate-200 bg-white px-2 py-3 rounded-md"
             key={transaction?.id}
           >
             <div className="flex items-center w-12 h-12 px-4 py-5 bg-primary-50 rounded-full justify-center">

@@ -26,6 +26,5 @@ export default function useGenerateLink(amountDetails: GenerateLinkRequest) {
     queryKey: ["generateLink", amountDetails], // Cache key that includes the details
     queryFn: () => generateLink(amountDetails), // Fetch the link
     enabled: false, // Only enable the query if amount is present
-    staleTime: 0, // Customize cache time
   });
 }

@@ -67,9 +67,6 @@ export default function ResetPassword() {
     e.preventDefault();
 
     if (validate()) {
-      console.log("Token:", token); // Log the token for demonstration
-      console.log(formData);
-      // You can add your form submission logic here (e.g., API call)
       mutate({ token, confirm: formData.confirmPassword, new_password: formData.password }); // Pass token with form data for submission
     }
   };

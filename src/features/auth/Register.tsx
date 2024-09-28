@@ -158,9 +158,10 @@ export default function Register() {
           firstName: formData.firstname,
           lastName: formData.lastname,
           phone: formData.telephone,
-          ...formData,
+          email: formData.email,
+          password: formData.password,
+          username: formData.username
         };
-
         mutate(newData);
       }
     },
@@ -182,7 +183,7 @@ export default function Register() {
           </p>
 
           {step === 1 && (
-            <div className="py-6 space-y-6 max-w-xs md:max-w-sm">
+            <div className="py-6 space-y-6 max-w-sm md:max-w-lg">
               <div className="flex gap-2">
                 <CustomInput
                   name="firstname"
@@ -228,7 +229,7 @@ export default function Register() {
           )}
 
           {step === 2 && (
-            <div className="py-6 space-y-6 w-full max-w-xs md:max-w-sm">
+            <div className="py-6 space-y-6 w-full max-w-sm md:max-w-lg">
               <CustomInput
                 name="username"
                 value={formData.username}
