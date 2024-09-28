@@ -25,16 +25,25 @@ export default function useChangePassword() {
       toast.success(responseData.message, { toastId: responseData?.message });
     },
     onError: (error: AxiosError) => {
-      if (error.response?.status == 500) {
+      const statusCode = error.response?.status;
+      const errorMessage =
+        (error.response?.data as { message?: string })?.message ||
+        "Something went wrong";
+
+      if (statusCode === 500) {
         toast.error("Server Error: Please try again later", {
           toastId: error.message,
         });
-      } else if (error.response?.status === 401) {
-        toast.error("Old password", {
+      } else if (statusCode === 401) {
+        toast.error(errorMessage, {
           toastId: error.message,
         });
-      } else if (error.response?.status === 422) {
-        toast.error("Old password same as new password", {
+      } else if (statusCode === 422) {
+        toast.error(errorMessage, {
+          toastId: error.message,
+        });
+      } else {
+        toast.error(errorMessage, {
           toastId: error.message,
         });
       }

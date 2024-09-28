@@ -15,9 +15,21 @@ const useUpdateBankAccount = () => {
       return response.data; // This returns the response data
     },
     onError: (error: AxiosError) => {
-      toast.error("Error Updating bank account", { toastId: error?.message });
+      // const status = error.response?.status;
+      // let errorMessage;
+
+      // Check for specific status codes and set the appropriate message
+      // if (status === 400) {
+      //   errorMessage = "Account not found"; // Custom message for 400 errors
+      // } else {
+      //   errorMessage = (error.response?.data as { message?: string })?.message || "Something went wrong"; // Default message
+      // }
+
+      // Show the error message in a toast
+      toast.error("Account not found", { toastId: error?.message });
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log(data);
       toast.success("Bank account updated successfully", {
         toastId: "updated",
       });

@@ -1,57 +1,36 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo} from "react";
 import { Button, Input, Select, SelectItem, Spinner } from "@nextui-org/react";
-import { useInfiniteScroll } from "@nextui-org/use-infinite-scroll";
 import useGetBanks from "./services/useGetBanks";
 import useGetBank from "./services/useGetBank";
 import useSaveBankAccount from "./services/useSaveBankAccount";
 import useUpdateBankAccount from "./services/useUpdateBankAccount";
-import { Bank } from "../../utils/types";
 
 export default function AddBankAccount() {
-  const [isOpen, setIsOpen] = useState(false);
   const [accountNumber, setAccountNumber] = useState<string>("");
   const { data, isLoading } = useGetBanks();
-  const [selectedBank, setSelectedBank] = useState<Bank | null>(null);
+  const [selectedBank, setSelectedBank] = useState<{ label: string, value: string }>();
   const { data: userBank, isLoading: isFetchingBank } = useGetBank();
   const { mutate: saveBank, isPending: isSaving } = useSaveBankAccount();
   const { mutate: updateBank, isPending: isUpdating } = useUpdateBankAccount();
 
-  const [loadedCount, setLoadedCount] = useState<number>(20); // Start with first 20 items
-  const CHUNK_SIZE = 20; // The size of each chunk to load
-
-  // Remove duplicate banks by bank.code and sort alphabetically by name
+  // Map banks to an array of objects containing label and value (for Select)
   const allBanks = useMemo(() => {
     const uniqueBanks = new Map();
     (data?.banks || []).forEach((bank) => {
-      uniqueBanks.set(bank.code, bank); // Ensure uniqueness by bank code
+      uniqueBanks.set(bank.code, { label: bank.name, value: bank.code }); // Map to label and value
     });
 
     // Convert map to array and sort banks alphabetically by name
     return Array.from(uniqueBanks.values()).sort((a, b) =>
-      a.name.localeCompare(b.name)
+      a.label.localeCompare(b.label)
     );
   }, [data]);
-
-  // Paginate banks manually in chunks
-  const filteredBanks = useMemo(() => {
-    return allBanks.slice(0, loadedCount); // Only show banks based on loaded count
-  }, [allBanks, loadedCount]);
-
-  // Infinite scroll hook to load more data when scrolling
-  const [, scrollerRef] = useInfiniteScroll({
-    hasMore: loadedCount < allBanks.length,
-    isEnabled: isOpen, // Only trigger infinite scroll when dropdown is open
-    onLoadMore: () => {
-      setLoadedCount((prev) => prev + CHUNK_SIZE);
-    },
-    shouldUseLoader: false,
-  });
 
   // Handle the bank account submission
   const handleSubmit = async () => {
     if (selectedBank && accountNumber) {
       saveBank({
-        code: selectedBank?.code,
+        code: selectedBank?.value,
         account_number: accountNumber,
       });
     }
@@ -61,18 +40,14 @@ export default function AddBankAccount() {
   const handleUpdate = async () => {
     if (selectedBank && accountNumber) {
       updateBank({
-        code: selectedBank?.code,
+        code: selectedBank?.value,
         account_number: accountNumber,
-      });
+      },{onSuccess() {
+        setSelectedBank(undefined)
+        setAccountNumber("")
+      },});
     }
   };
-
-  // Reset loaded count when Select is closed
-  useEffect(() => {
-    if (!isOpen) {
-      setLoadedCount(CHUNK_SIZE); // Reset loaded count when dropdown closes
-    }
-  }, [isOpen]);
 
   // Loading state for fetching data
   if (isLoading || isFetchingBank) {
@@ -80,37 +55,31 @@ export default function AddBankAccount() {
   }
 
   return (
-    <div className="flex flex-col  gap-6 p-6">
+    <div className="flex flex-col gap-6 p-6">
       <div className="w-full">
         <h1 className="lg:text-4xl text-xl font-medium">
-          Add or Update Bank Account
+          {!userBank?.data ? "Add" : "Update"} Bank Account
         </h1>
       </div>
       <Select
         className="max-w-xs"
-        classNames={{
-          base: "h-12"
-        }}
+        size="lg"
         aria-label="Banks"
         isLoading={isLoading}
-        items={filteredBanks}
         placeholder="Select a Bank"
-        scrollRef={scrollerRef}
-        selectionMode="single"
-        onOpenChange={setIsOpen}
-        selectedKeys={selectedBank ? [selectedBank.code] : undefined} // Use Set for selectedKeys
+        items={allBanks}
+        selectedKeys={selectedBank ? new Set([selectedBank.value]) : undefined} // Use Set for selectedKeys
         onSelectionChange={(key) => {
-          const selectedBankCode = Array.from(key)[0]; // Get the first value from the Set
-          const bank = filteredBanks.find((b) => b.code === selectedBankCode);
-          console.log(bank);
+          const selectedBankCode = Array.from(key).join(''); // Extract value from Set
+          const bank = allBanks.find((b) => b.value === selectedBankCode); // Match selected value
           if (bank) {
-            setSelectedBank(bank); // Update the selected bank state
+            setSelectedBank(bank); // Update selected bank
           }
         }}
       >
         {(bank) => (
-          <SelectItem key={bank.code} className="capitalize">
-            <div className="p-2">{bank.name}</div>
+          <SelectItem key={bank.value} className="capitalize">
+            {bank.label}
           </SelectItem>
         )}
       </Select>

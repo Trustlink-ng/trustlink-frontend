@@ -22,7 +22,7 @@ export default function WalletHistory({
   if(isLoading) return <Spinner />
 
   return (
-    <div className="max-h-1/2 h-1/2">
+    <div className="max-h-[700px] h-3/4">
       <ul className="w-full h-full divide-y-1 divide-main bg-white p-2 rounded-lg overflow-y-scroll">
         {transactions?.map((transaction) => (
           <li

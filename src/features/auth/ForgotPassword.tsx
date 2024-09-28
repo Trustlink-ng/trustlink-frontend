@@ -6,7 +6,7 @@ export default function ForgotPassword() {
 
   return (
     <div className="w-full h-full flex items-center lg:items-start justify-center flex-col">
-      <div className="h-full w-full max-w-[60%] lg:max-w-full flex lg:items-start justify-center lg:px-36 gap-2 lg:gap-3 flex-col lg:py-12">
+      <div className="h-full w-full max-w-full flex lg:items-start justify-center lg:px-36 gap-2 lg:gap-3 flex-col lg:py-12">
         <div className="w-full my-4">
           <h1 className="text-primary text-2xl text-left flex gap-2 font-semibold lg:text-2xl  ">
             <img src="/Logo.svg" alt="Trustlink" /> Trustlink
@@ -17,13 +17,13 @@ export default function ForgotPassword() {
             Enter your mail
           </h1>
         </div>
-        <form action="" className="">
+        <form action="" className="w-full">
           <div className="w-full">
             <p className="text-slate-500 text-left text-base">
               We will send a code to your mail
             </p>
           </div>
-          <div className="py-6 space-y-6 w-full max-w-lg">
+          <div className="py-6 space-y-6 w-full">
             <Input
               placeholder="Your Username..."
               type="text"
@@ -41,7 +41,7 @@ export default function ForgotPassword() {
                   "border-2 border-primary bg-white data-[hover=true]:bg-white group-data-[focus=true]/input:bg-white",
                 ],
               }}
-              className="w-full"
+              className="max-w-sm"
               size="lg"
             />
             <Button

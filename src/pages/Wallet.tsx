@@ -57,11 +57,11 @@ export default function Transactions() {
   );
 
   return (
-    <div className="w-full h-full flex flex-col overflow-hidden px-3 lg:grid lg:grid-cols-2 gap-3">
+    <div className="w-full h-full flex flex-col overflow-hidden px-3 py-4 lg:grid lg:grid-cols-2 gap-2">
       <div className="w-full h-full flex flex-col gap-3 lg:gap-6">
-        <div className="flex flex-col xl:flex-row gap-2">
+        <div className="w-full flex flex-col xl:flex-row gap-2">
           <WalletBalance />
-          <div className="h-full w-full flex gap-3 p-3 ">
+          <div className="h-full w-full flex gap-3 py-3 ">
             <div
               onClick={() => navigate("fund")}
               className="w-full flex flex-col items-center bg-white shadow-md rounded-lg py-6 justify-center cursor-pointer "
