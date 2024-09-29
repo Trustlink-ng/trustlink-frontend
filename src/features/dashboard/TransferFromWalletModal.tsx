@@ -76,19 +76,23 @@ export default function TransferFromWalletModal({
   
   return (
     <Modal
-      size="xl"
+      size="lg"
+      className="m-2"
       isOpen={isOpen}
+      isDismissable={false}
+      scrollBehavior="outside"
+      backdrop="opaque"
       onOpenChange={onOpenChange} // This will close the modal when triggered
     >
-      <ModalContent className="p-3">
-        <ModalHeader className="flex flex-col text-xl font-semibold gap-1 items-center">
+      <ModalContent className="p-2 lg:p-3">
+        <ModalHeader className="flex flex-col p-1 lg:p-3 text-xl font-semibold gap-1 items-center">
           Transfer from Wallet
         </ModalHeader>
         <ModalBody className="px-4 py-1">
           <p className="text-lg font-medium">
             Transfer funds with various users on the platform{" "}
           </p>
-          <div className="py-2 w-full space-y-4 max-w-xs md:max-w-lg">
+          <div className="py-2 w-full lg:space-y-4 max-w-xs md:max-w-lg">
             <Input
               name="recipient"
               value={recipient} // Bind input value to state

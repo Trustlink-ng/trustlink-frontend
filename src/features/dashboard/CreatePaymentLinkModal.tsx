@@ -60,6 +60,9 @@ export default function CreatePaymentLinkModal({
     <Modal
       size="xl"
       isOpen={isOpen}
+      isDismissable={false}
+      scrollBehavior="outside"
+      backdrop="opaque"
       onOpenChange={onOpenChange} // This will close the modal when triggered
     >
       <ModalContent className="p-3">
@@ -145,7 +148,7 @@ export default function CreatePaymentLinkModal({
             variant="bordered"
             onPress={handleClose}
           >
-            Close
+            Cancel
           </Button>
           {!data?.data && (
             <Button

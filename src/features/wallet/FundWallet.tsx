@@ -19,18 +19,19 @@ export default function FundWallet() {
   }, [numericAmount]);
 
   const handleGenerateAccount = () => {
-    if (!numericAmount || numericAmount <= 0) {
+    if (numericAmount && numericAmount > 0) {
+      refetch(); // Trigger the query when the button is clicked
+    } else {
       toast.error("Please enter a valid amount");
       return;
     }
-    refetch(); // Trigger the query when the button is clicked
   };
 
   return (
     <div className="w-full">
       <Card className="w-full h-full p-1">
         <CardHeader className="flex items-center justify-center w-full">
-          <h3 className="text-lg: lg:text-xl font-semibold text-primary">
+          <h3 className="text-xl font-semibold text-primary">
             Fund Wallet
           </h3>
         </CardHeader>
@@ -57,7 +58,6 @@ export default function FundWallet() {
               color="primary"
               onPress={handleGenerateAccount}
               isLoading={isLoading}
-              
             >
               {isLoading
                 ? ""
@@ -68,7 +68,7 @@ export default function FundWallet() {
           </div>
 
           {data && (
-            <div className="flex gap-3 flex-col items-center justify-center">
+            <div className="flex lg:gap-3 flex-col items-center justify-center">
               <h3 className="text-xl lg:text-xl font-semibold text-primary">
                 Account Details
               </h3>

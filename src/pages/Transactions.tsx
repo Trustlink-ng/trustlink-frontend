@@ -81,7 +81,7 @@ export default function Transactions() {
         );
 
   return (
-    <div className="w-full h-full space-y-2 p-2 md:px-6 overflow-auto lg:p-4 ">
+    <div className="w-full h-full space-y-2 p-2 md:px-6 overflow-auto lg:p-4">
       <TransactionTabs currentTab={currentTab} setCurrentTab={setCurrentTab} />
       <div className="flex gap-2 lg:gap-6">
         <TransactionWidget
@@ -105,7 +105,7 @@ export default function Transactions() {
           value={getTransactionCount(filteredTransactions)}
         />
       </div>
-      <div className="w-full flex flex-col rounded-xl gap-2 mb-12">
+      <div className="w-full h-full flex flex-col rounded-xl gap-2 ">
         <div className="w-full flex flex-col md:flex-row font-semibold gap-3 py-2 md:py-4">
           <div className="flex items-center gap-3 ">
             <DatePicker
@@ -130,9 +130,7 @@ export default function Transactions() {
             onSelectChange={handleFilterChange}
           />
         </div>
-        <div >
           <TransactionSummary transactions={transactionsFiltered} />
-        </div>
         <MobileTransactionSummary
           transactions={transactionsFiltered}
           isLoading={isLoading}
