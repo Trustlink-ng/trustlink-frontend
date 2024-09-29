@@ -38,11 +38,11 @@ export const MainNav = ({ handleClose }: { handleClose?: () => void }) => {
           <span>Cards</span>
         </NavLink>
         <span
-          className="flex gap-2 w-full px-3 justify-start border-l-5 items-center text-left py-2 cursor-pointer"
+          className="flex gap-2 w-full px-3 justify-start items-center text-left py-2 cursor-pointer"
           onClick={handleOpen}
         >
           <IoSettingsOutline color="#264653" className="text-2xl" />
-          <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">
+          <span className="flex-1 lg:ms-3 text-left rtl:text-right whitespace-nowrap">
             Settings
           </span>
           {isOpen ? (
@@ -75,7 +75,7 @@ export const MainNav = ({ handleClose }: { handleClose?: () => void }) => {
         onClick={handleLogout}
       >
         <TbLogout2 color="red" className="text-3xl" />
-        <span className="text-[red] text-xl">Logout</span>
+        <span className="text-[red] lg:text-xl">Logout</span>
       </div>
     </div>
   );

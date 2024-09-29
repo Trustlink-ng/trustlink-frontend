@@ -29,22 +29,24 @@ export default function TransactionOverview() {
     useRequestRefund(transID);
   const [otp, setOtp] = useState("");
   const [description, setDescription] = useState("");
-  const [file, setFile] = useState<File | null>(null); // State for handling file
+  const [file, setFile] = useState<File | null>(null);
   const navigate = useNavigate();
   const [isIncoming, setIsIncoming] = useState(false);
   const [isRefundable, setIsRefundable] = useState(false);
   const [isRefundOpen, setIsRefundOpen] = useState(false);
   const [isConfirmRefund, setIsConfirmRefund] = useState(false);
   const queryClient = useQueryClient();
-  const { data: disputes, isLoading: isFetchingDisputes ,error} = useGetDisputes();
+  const {
+    data: disputes,
+    isLoading: isFetchingDisputes,
+    error,
+  } = useGetDisputes();
   console.log(error);
 
-  // Filter the disputes to find if there's any matching the transaction ID
   const matchingDispute = disputes?.data.find(
     (dispute) => dispute.transaction.id === transID
   );
 
-  // If a dispute is found, use the transaction from the dispute; otherwise, use the single transaction data
   const transaction = matchingDispute
     ? matchingDispute.transaction
     : data?.data;
@@ -56,6 +58,7 @@ export default function TransactionOverview() {
     setIsIncoming(
       transaction?.type === "CREDIT" &&
         transaction?.status !== "Completed" &&
+        transaction?.status !== "Refunded" &&
         transaction?.status !== "Cancelled"
     );
     setIsRefundable(
@@ -101,7 +104,6 @@ export default function TransactionOverview() {
     }
   };
 
-  // New handler for file input
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] || null;
     if (selectedFile) {
@@ -118,7 +120,7 @@ export default function TransactionOverview() {
     requestRefund(
       {
         reason: description,
-        proof: file, // This is the File object (e.g., from an input field)
+        proof: file, 
       },
       {
         onSuccess: () => {
@@ -246,18 +248,6 @@ export default function TransactionOverview() {
                         <p>Dispute Reason</p>
                         <p className="text-primary">{matchingDispute.reason}</p>
                       </div>
-
-                      {/* Render the dispute image if present */}
-                      {matchingDispute.evidence && (
-                        <div className="flex font-semibold justify-between gap-6">
-                          <p>Dispute Image</p>
-                          <img
-                            src={matchingDispute.evidence}
-                            alt="Dispute Evidence"
-                            className="max-w-xs rounded"
-                          />
-                        </div>
-                      )}
                     </div>
                   )}
                   {isIncoming && (

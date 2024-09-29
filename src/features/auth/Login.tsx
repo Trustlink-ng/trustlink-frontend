@@ -83,14 +83,14 @@ export default function Login() {
 
   return (
     <div className="w-full h-full flex items-center lg:items-start justify-center flex-col">
-      <div className="h-full w-full max-w-[70%] lg:max-w-full flex items-center lg:items-start justify-center lg:px-36 gap-2 lg:gap-3 flex-col lg:py-12">
+      <div className="h-full w-full max-w-[80%] lg:max-w-full flex items-center lg:items-start justify-center lg:px-36 gap-2 lg:gap-3 flex-col lg:py-12">
         <div className="w-full my-4">
           <h1 className="text-primary text-3xl text-left flex gap-2 font-semibold lg:text-3xl  ">
             <img src="/Logo.svg" alt="Trustlink" /> Trustlink
           </h1>
         </div>
         <div className="w-full">
-          <h1 className="lg:text-4xl text-2xl text-left lg:text-center font-medium">
+          <h1 className="lg:text-4xl text-2xl text-left font-medium">
             Good to see you again today!👋
           </h1>
         </div>
