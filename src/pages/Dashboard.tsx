@@ -48,10 +48,10 @@ export default function Dashboard() {
 
   return (
     <div
-      className={`"w-full h-full gap-2 overflow-auto flex flex-col  md:px-6 p-2 lg:p-4 "`}
+      className={`"w-full h-full gap-2 overflow-auto flex flex-col md:px-6 p-2 lg:p-4 "`}
     >
       <WalletSummary />
-      <div className="w-full h-full grow flex flex-col rounded-xl gap-2 lg:py-2 mb-24">
+      <div className="w-full h-full grow flex flex-col rounded-xl gap-2 lg:py-2 lg:mb-24">
         <div className="w-full h-full rounded-xl flex flex-col gap-1">
           <div className="w-full flex justify-between items-center py-2 px-3">
             <h1 className="font-semibold text-xl">Recent History</h1>

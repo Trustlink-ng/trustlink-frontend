@@ -51,7 +51,7 @@ export default function AppLayout() {
 
   return (
     <div className="w-full h-full grid  grid-rows-[auto_1fr] divide-y-1 divide-[#D1D0D0] bg-main">
-      <div className="w-full max-h-24 sticky top-0 z-30 flex justify-between lg:p-2 bg-main items-center px-5 lg:px-8">
+      <div className="w-full max-h-24 sticky top-0 z-30 flex justify-between bg-main items-center px-5 lg:px-8">
         <Logo />
         <div className="flex items-center gap-6 justify-center">
           <GiHamburgerMenu
@@ -83,7 +83,7 @@ export default function AppLayout() {
           />
         </div>
       </div>
-      <div className="w-full h-full divide-x-1 pb-12 overflow-hidden divide-[#D1D0D0] grid grid-cols-1 lg:grid-cols-[20%_80%]">
+      <div className="w-full h-full divide-x-1 lg:pb-12 overflow-hidden divide-[#D1D0D0] grid grid-cols-1 lg:grid-cols-[20%_80%]">
         <SideBar />
         <div className="w-full h-full overflow-auto ">
           <Outlet />
