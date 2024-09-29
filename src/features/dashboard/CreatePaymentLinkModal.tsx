@@ -8,7 +8,7 @@ import {
   ModalHeader,
   Textarea,
 } from "@nextui-org/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useGenerateLink from "./services/useGenerateLink";
 import { toast } from "react-toastify";
 
@@ -23,6 +23,8 @@ export default function CreatePaymentLinkModal({
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true); // State to disable button
+
 
   const { data, isLoading, refetch } = useGenerateLink({
     customer_name: name,
@@ -30,6 +32,14 @@ export default function CreatePaymentLinkModal({
     narration: description,
     amount,
   });
+
+  useEffect(() => {
+    if (name && amount && description && email) {
+      setIsButtonDisabled(false); // Enable button if all fields are filled
+    } else {
+      setIsButtonDisabled(true); // Disable button if any field is empty
+    }
+  }, [name, amount, description, email]); // Run whenever any input changes
 
   const handleClose = () => {
     onOpenChange();
@@ -65,7 +75,7 @@ export default function CreatePaymentLinkModal({
       backdrop="opaque"
       onOpenChange={onOpenChange} // This will close the modal when triggered
     >
-      <ModalContent className="p-3">
+      <ModalContent className="p-2 lg:p-3">
         <ModalHeader className="flex flex-col text-2xl text-primary font-semibold gap-1 items-center">
           Create Payment Link
         </ModalHeader>
@@ -155,7 +165,7 @@ export default function CreatePaymentLinkModal({
               color="primary"
               onPress={handleSubmit}
               isLoading={isLoading}
-              isDisabled={isLoading}
+              isDisabled={isLoading || isButtonDisabled}
             >
               Create Link
             </Button>

@@ -34,7 +34,6 @@ export default function TransferFromWalletModal({
   const wallet = data?.wallet;
   const queryClient = useQueryClient();
 
-
   useEffect(() => {
     if (recipient && amount && description && otp.length == 4) {
       setIsButtonDisabled(false); // Enable button if all fields are filled
@@ -46,13 +45,13 @@ export default function TransferFromWalletModal({
   const handleSubmit = () => {
     // Ensure amount is converted to a number before comparison
     const numericAmount = +amount;
-  
+
     // Check if amount is greater than wallet balance
     if (numericAmount > (wallet?.balance ?? 0)) {
       toast.error("Insufficient funds in your wallet."); // Alert user of insufficient funds
       return; // Ensure the function stops execution here
     }
-  
+
     // If amount is valid and less than or equal to wallet balance, proceed with mutate
     mutate(
       {
@@ -67,17 +66,17 @@ export default function TransferFromWalletModal({
           setDescription("");
           setOtp("");
           onOpenChange();
-          queryClient.invalidateQueries({ queryKey: ['wallet'] });  // R}}efresh wallet balance
-          queryClient.invalidateQueries({ queryKey: ['transactions'] });  // Refresh transaction history
+          queryClient.invalidateQueries({ queryKey: ["wallet"] }); // R}}efresh wallet balance
+          queryClient.invalidateQueries({ queryKey: ["transactions"] }); // Refresh transaction history
         },
       }
     );
   };
-  
+
   return (
     <Modal
-      size="lg"
-      className="m-2"
+      size="xl"
+      className="mx-2"
       isOpen={isOpen}
       isDismissable={false}
       scrollBehavior="outside"
@@ -85,7 +84,7 @@ export default function TransferFromWalletModal({
       onOpenChange={onOpenChange} // This will close the modal when triggered
     >
       <ModalContent className="p-2 lg:p-3">
-        <ModalHeader className="flex flex-col p-1 lg:p-3 text-xl font-semibold gap-1 items-center">
+        <ModalHeader className="flex flex-col text-2xl text-primary font-semibold gap-1 items-center">
           Transfer from Wallet
         </ModalHeader>
         <ModalBody className="px-4 py-1">
@@ -101,6 +100,7 @@ export default function TransferFromWalletModal({
               labelPlacement="outside"
               isRequired
               label="Recipient"
+              variant="bordered"
               className="py-3"
               size="lg"
               type="text"
@@ -115,6 +115,7 @@ export default function TransferFromWalletModal({
               className="py-3"
               isRequired
               label="Amount"
+              variant="bordered"
               size="lg"
               startContent={<TbCurrencyNaira size={25} />}
               type="text"
@@ -123,6 +124,7 @@ export default function TransferFromWalletModal({
             <Textarea
               label="Description"
               isRequired
+              variant="bordered"
               name="description"
               value={description} // Bind textarea value to state
               onChange={(e) => setDescription(e.target.value)} // Update state on change
@@ -135,7 +137,7 @@ export default function TransferFromWalletModal({
             <div className="flex flex-col gap-3 items-center justify-center">
               <p className="text-lg font-medium">Input your transaction pin</p>
               <OtpInput
-              id="transfer"
+                id="transfer"
                 onChange={setOtp} // Update OTP state when changed
                 length={4} // Number of OTP inputs
               />
@@ -146,8 +148,13 @@ export default function TransferFromWalletModal({
           <Button color="danger" variant="bordered" onPress={onOpenChange}>
             Cancel
           </Button>
-          <Button isDisabled={isButtonDisabled} color="primary" onPress={handleSubmit} isLoading={isPending}>
-           {isPending ? "" : "Transfer"}
+          <Button
+            isDisabled={isButtonDisabled}
+            color="primary"
+            onPress={handleSubmit}
+            isLoading={isPending}
+          >
+            {isPending ? "" : "Transfer"}
           </Button>
         </ModalFooter>
       </ModalContent>
