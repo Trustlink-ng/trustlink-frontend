@@ -9,7 +9,7 @@ export default function Actions() {
     <div className="">
       <Card className="p-2 h-full rounded-lg space-y-1">
         <h2 className="capitalize font-semibold">Quick Actions</h2>
-        <CardBody className="flex flex-row justify-evenly h-24 py-4 bg-slate-100">
+        <CardBody className="flex flex-row justify-evenly h-24 py-2 lg:py-0 bg-slate-100">
           <CreatePaymentLink />
           <FundWallet />
           <Transfer />

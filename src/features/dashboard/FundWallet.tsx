@@ -8,8 +8,10 @@ export default function FundWallet() {
       onClick={() => navigate("/wallet/fund")}
       className="flex cursor-pointer flex-col items-center rounded-md w-full text-center gap-2 hover:bg-blue-100 p-2 justify-center"
     >
-      <CiWallet className="text-xl" />
-      <p className="text-sm font-medium">Fund Wallet</p>
+      <div>
+        <CiWallet className="text-xl lg:text-3xl" />
+      </div>
+      <p className="text-sm lg:text-base font-medium">Fund Wallet</p>
     </div>
   );
 }
