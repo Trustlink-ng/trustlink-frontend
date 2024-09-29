@@ -1,6 +1,5 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { LiaTimesSolid } from "react-icons/lia";
-
 import SideBar from "./SideBar";
 import Logo from "./Logo";
 import { Avatar } from "@nextui-org/react";
@@ -12,17 +11,26 @@ import { MainNav } from "./MainNav";
 export default function AppLayout() {
   const [name, setName] = useState("");
   const [toggle, setToggle] = useState(false);
+  const [showNav, setShowNav] = useState(false); // State to control when the nav is shown
   const navigate = useNavigate();
-
-  const navRef = useRef<HTMLDivElement>(null); // Ref to track the nav
+  const navRef = useRef<HTMLDivElement>(null);
 
   const handleToggle = () => {
-    setToggle((toggle) => !toggle);
+    if (!toggle) {
+      setToggle(true);
+      setTimeout(() => {
+        setShowNav(true); // Show nav with delay
+      }, 300); // Adjust the delay (300ms here)
+    } else {
+      setShowNav(false);
+      setToggle(false);
+    }
   };
 
   const handleClickOutside = (event: MouseEvent) => {
     if (navRef.current && !navRef.current.contains(event.target as Node)) {
-      setToggle(false); // Call handleClose when clicked outside
+      setShowNav(false);
+      setToggle(false);
     }
   };
 
@@ -32,7 +40,7 @@ export default function AppLayout() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-  // Fetch email from localStorage when component mounts
+
   useEffect(() => {
     const storedUserData = localStorage.getItem("user");
     if (storedUserData) {
@@ -40,6 +48,7 @@ export default function AppLayout() {
       setName(user.firstName + user.lastName);
     }
   }, []);
+
   return (
     <div className="w-full h-full grid  grid-rows-[auto_1fr] divide-y-1 divide-[#D1D0D0] bg-main">
       <div className="w-full max-h-24 sticky top-0 z-30 flex justify-between lg:p-2 bg-main items-center px-5 lg:px-8">
@@ -51,23 +60,24 @@ export default function AppLayout() {
           />
           <div
             ref={navRef}
-            className={`lg:hidden p-12 px-8 h-screen transition-all duration-1000 ${
-              toggle ? "w-[300px] md:w-1/2" : "w-0 hidden"
-            } bg-main z-10 absolute left-0 top-0 row-span-full flex items-start flex-col]`}
+            className={`lg:hidden p-12 px-8 h-screen transition-all duration-300 ${
+              toggle ? "w-[300px] md:w-1/2 bg-main" : "w-0"
+            } z-10 absolute left-0 top-0 row-span-full flex items-start flex-col`}
           >
-            <div className="absolute top-8 z-11">
-              <LiaTimesSolid
-                className="text-2xl cursor-pointer"
-                onClick={handleToggle}
-              />
-            </div>
-            <MainNav handleClose={handleToggle} />
+            {toggle && (
+              <div className="absolute top-8 z-11">
+                <LiaTimesSolid
+                  className="text-2xl cursor-pointer"
+                  onClick={handleToggle}
+                />
+              </div>
+            )}
+            {showNav && <MainNav handleClose={handleToggle} />}
           </div>
           <Avatar
             onClick={() => navigate("/settings")}
             className="uppercase hidden bg-blue-200 lg:inline-block cursor-pointer text-lg"
             showFallback
-            
             name={getInitials(name) || ""}
             size="lg"
           />
