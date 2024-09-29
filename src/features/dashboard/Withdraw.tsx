@@ -6,8 +6,10 @@ export default function Withdraw() {
   return (
     <div 
     onClick={() => navigate("/wallet/withdraw")}className="flex cursor-pointer flex-col text-center w-full gap-2 items-center rounded-md hover:bg-blue-100 p-2 justify-center">
-      <FiRefreshCw className="text-xl" />
-      <p className="text-sm font-medium">Withdraw</p>
+      <div>
+        <FiRefreshCw className="text-xl lg:text-3xl" />
+      </div>
+      <p className="text-sm lg:text-base font-medium">Withdraw</p>
     </div>
   );
 }
