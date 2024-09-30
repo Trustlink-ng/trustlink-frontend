@@ -29,10 +29,8 @@ export default function useRegister() {
       localStorage.setItem("user", JSON.stringify(userData));
       setFlowValid(true);
       navigate("/verify-email");
-      console.log(responseData);
     },
     onError: (data) => {
-      console.log(data);
       toast.error(data.message, { toastId: data.message });
     },
   });

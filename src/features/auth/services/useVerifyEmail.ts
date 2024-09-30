@@ -38,7 +38,6 @@ export default function useVerifyEmail() {
 
     },
     onError: (data) => {
-      console.log(data);
       toast.error(data.message, { toastId: data.message });
     },
   });

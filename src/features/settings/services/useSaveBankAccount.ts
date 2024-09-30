@@ -15,7 +15,6 @@ const useSaveBankAccount = () => {
       return data;
     },
     onError: (error: AxiosError) => {
-      console.log(error);
       toast.error("Error Saving bank account:", { toastId: error?.message });
     },
     onSuccess: () => {
