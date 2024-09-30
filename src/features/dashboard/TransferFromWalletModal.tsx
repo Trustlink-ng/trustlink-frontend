@@ -90,7 +90,7 @@ export default function TransferFromWalletModal({
           <p className="text-lg font-medium">
             Transfer funds with various users on the platform{" "}
           </p>
-          <div className="py-2 w-full lg:space-y-4 max-w-xs md:max-w-lg">
+          <div className="py-6 w-full lg:space-y-4 max-w-xs md:max-w-lg">
             <Input
               name="recipient"
               value={recipient} // Bind input value to state
