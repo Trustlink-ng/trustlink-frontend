@@ -102,8 +102,8 @@ const OtpInput: React.FC<OtpInputProps> = ({
         <input
           key={index}
           id={`otp-input-${id}-${index}`}
-          type={isNumeric ? "password" : "text"} // Use password type for numeric OTP
-          value={value}
+          type="password" // Always use password type to mask input
+          value={value ? "•" : ""} // Mask with dots (•) instead of the real value
           onChange={(e) => handleChange(e.target.value, index)} // Handle input changes
           onKeyDown={(e) => handleKeyDown(e, index)} // Handle key events
           onPaste={handlePaste} // Handle paste events
