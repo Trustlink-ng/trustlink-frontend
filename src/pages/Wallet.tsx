@@ -1,16 +1,11 @@
 import { useState } from "react";
 import {
   parseDate,
-  getLocalTimeZone,
   CalendarDate,
 } from "@internationalized/date";
 import { DatePicker } from "@nextui-org/react";
-import Filter from "../components/Filter";
 
-import {
-  getWalletHistoryBetweenDates,
-  transactionStatuses,
-} from "../utils/helpers";
+
 import WalletBalance from "../features/dashboard/WalletBalance";
 import useGetWalletHistory from "../features/wallet/services/useGetWalletHistory";
 import WalletHistory from "../features/wallet/WalletHistory";
@@ -19,7 +14,6 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { FiRefreshCw } from "react-icons/fi";
 
 export default function Transactions() {
-  const [selectedFilter, setSelectedFilter] = useState<string>("All");
   const navigate = useNavigate();
   const allTransactions = useGetWalletHistory();
 
@@ -33,9 +27,6 @@ export default function Transactions() {
     parseDate(new Date().toISOString().split("T")[0])
   );
 
-  const handleFilterChange = (value: string) => {
-    setSelectedFilter(value);
-  };
 
   const handleFromDateChange = (date: CalendarDate) => {
     setFromDate(date);
@@ -48,12 +39,6 @@ export default function Transactions() {
   const { data, isLoading } = allTransactions;
   const transactions = data?.data || [];
 
-  // Filter transactions based on selected date range
-  const filteredWalletHistory = getWalletHistoryBetweenDates(
-    transactions,
-    fromDate.toDate(getLocalTimeZone()), // Convert to Date
-    toDate.toDate(getLocalTimeZone()) // Convert to Date
-  );
 
   return (
     <div className="w-full lg:h-full flex flex-col lg:overflow-hidden px-2 md:px-6 lg:px-2 py-4 lg:grid lg:grid-cols-2 gap-6 lg:gap-2">
@@ -83,8 +68,8 @@ export default function Transactions() {
       </div>
 
       {transactions?.length !== 0 && (
-        <div className="w-full h-full rounded-xl flex flex-col gap-6 lg:gap-2  px-1">
-          <div className="w-full h-full flex flex-col font-semibold gap-3">
+        <div className="w-full rounded-xl flex flex-col gap-6 lg:gap-2  px-1">
+          <div className="w-full flex font-semibold gap-3">
             <div className="flex items-center gap-3 ">
               <DatePicker
                 className="max-w-[160px] md:max-w-[200px] lg:max-w-[150px]"
@@ -101,14 +86,9 @@ export default function Transactions() {
                 onChange={handleToDateChange}
               />
             </div>
-            <Filter
-              options={transactionStatuses}
-              selectedValue={selectedFilter}
-              onSelectChange={handleFilterChange}
-            />
           </div>
           <WalletHistory
-            transactions={filteredWalletHistory}
+            transactions={transactions}
             isLoading={isLoading}
           />
         </div>

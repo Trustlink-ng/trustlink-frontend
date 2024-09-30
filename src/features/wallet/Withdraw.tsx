@@ -26,6 +26,7 @@ export default function Withdraw() {
   const queryClient = useQueryClient();
   const [isInvalid, setIsInvalid] = useState(true);
 
+
   useEffect(() => {
     if (otp.length === 4 && +amount > 0) {
       setIsInvalid(false);
