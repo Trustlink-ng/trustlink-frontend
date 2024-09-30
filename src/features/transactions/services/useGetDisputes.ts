@@ -6,7 +6,6 @@ const getDisputes = async (): Promise<DisputeResponse> => {
   const { data } = await axiosInstance.get<DisputeResponse>(
     "/api/all/disputes"
   );
-  console.log(data);
   return data;
 };
 

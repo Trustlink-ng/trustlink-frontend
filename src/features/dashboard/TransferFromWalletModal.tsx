@@ -136,6 +136,7 @@ export default function TransferFromWalletModal({
             <div className="flex flex-col gap-3 items-center justify-center">
               <p className="text-lg font-medium">Input your transaction pin</p>
               <OtpInput
+                autoFocus={false}
                 id="transfer"
                 onChange={setOtp} // Update OTP state when changed
                 length={4} // Number of OTP inputs

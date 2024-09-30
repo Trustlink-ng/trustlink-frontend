@@ -39,9 +39,7 @@ export default function TransactionOverview() {
   const {
     data: disputes,
     isLoading: isFetchingDisputes,
-    error,
   } = useGetDisputes();
-  console.log(error);
 
   const matchingDispute = disputes?.data.find(
     (dispute) => dispute.transaction.id === transID

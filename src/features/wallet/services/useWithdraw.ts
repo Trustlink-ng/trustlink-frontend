@@ -18,7 +18,6 @@ export default function useWithdraw() {
       toast.success(data.message, { toastId: data.message });
     },
     onError: (error: AxiosError) => {
-      console.error(error);
       if (error.response?.status === 500) {
         toast.error("Server Error: Please try again later", {
           toastId: "server-error",

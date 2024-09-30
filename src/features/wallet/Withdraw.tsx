@@ -92,6 +92,7 @@ export default function Withdraw() {
                   Input your transaction pin
                 </p>
                 <OtpInput
+                  autoFocus={false}
                   id={"withdraw"}
                   onChange={setOtp} // Update OTP state when changed
                   length={4} // Number of OTP inputs

@@ -109,6 +109,7 @@ const OtpInput: React.FC<OtpInputProps> = ({
           onPaste={handlePaste} // Handle paste events
           onFocus={() => handleFocus(index)} // Manage focus behavior
           maxLength={1} // Allow only 1 character per input
+          autoFocus={autoFocus && index === 0} // Auto-focus on the first input
           className={`transition-all duration-300 bg-white w-12 h-12 lg:w-16 lg:h-16 border-2 rounded-lg outline-none shadow-sm text-lg lg:text-xl font-semibold tracking-wider ${
             value ? "border-primary" : "border-gray-300"
           } text-center focus:border-blue-500 focus:ring-2 ring-blue-300 ${
