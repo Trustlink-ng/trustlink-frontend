@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { VerifyEmailResponse, VerifyEmailCredentials } from "../../../utils/types";
 import { setTokenWithExpiry } from "../../../utils/helpers";
 import { toast } from "react-toastify";
+import { useFlow } from "../context/FlowContext";
 
 const verifyEmail = async (
   verifyEmailData: VerifyEmailCredentials
@@ -17,6 +18,7 @@ const verifyEmail = async (
 
 export default function useVerifyEmail() {
   const navigate = useNavigate();
+  const {setFlowValid} = useFlow()
   return useMutation({
     mutationFn: verifyEmail,
     onSuccess: (data) => {
@@ -30,7 +32,8 @@ export default function useVerifyEmail() {
 
       // Optionally, you can also store the user data if needed
       localStorage.setItem("user", JSON.stringify(responseData.user));
-      toast.error(data.message, { toastId: data.message });
+      toast.success(data.message, { toastId: data.message });
+      setFlowValid(true)
       navigate('/set-pin')
 
     },

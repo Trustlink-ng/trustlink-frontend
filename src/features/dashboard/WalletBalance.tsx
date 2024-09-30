@@ -2,21 +2,27 @@ import { Card, CardHeader } from "@nextui-org/card";
 import useGetWallet from "../wallet/services/useGetWallet";
 import { Button, Spinner } from "@nextui-org/react";
 import { formatBalance } from "../../utils/helpers";
+import { useNavigate } from "react-router-dom";
+import { useFlow } from "../auth/context/FlowContext";
 
 export default function WalletBalance() {
   const { data, isLoading } = useGetWallet();
+  const navigate = useNavigate();
+  const {setFlowValid} = useFlow();
   const wallet = data?.wallet;
 
   return (
     <Card className="p-2 py-5 w-full rounded-lg">
-      {isLoading ? (
-        <Spinner color="primary" size="lg" />
-      ) : !wallet ? (
+      {!wallet ? (
         <CardHeader className="flex flex-col items-center justify-center gap-1">
           <Button
             className="bg-primary w-full max-w-xs outline-none data-[focus-visible=true]:outline-0 text-white"
             size="md"
             radius="full"
+            onClick={() => {
+              setFlowValid(true)
+              navigate("/set-pin");
+            }}
           >
             Create Wallet
           </Button>

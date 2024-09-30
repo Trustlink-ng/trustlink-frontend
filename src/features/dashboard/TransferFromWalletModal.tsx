@@ -76,7 +76,6 @@ export default function TransferFromWalletModal({
   return (
     <Modal
       size="xl"
-      className="mx-2"
       isOpen={isOpen}
       isDismissable={false}
       scrollBehavior="outside"

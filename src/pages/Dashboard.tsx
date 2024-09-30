@@ -27,7 +27,10 @@ export default function Dashboard() {
 
   if (isSuccess && transactions.length == 0) {
     return (
-      <div className="h-full ">
+      <div className="h-full p-4 ">
+        <div className="mx-3 md:mx-24">
+          <WalletSummary />
+        </div>
         <div className="p-6 text-2xl text-center overflow-hidden font-semibold text-primary lg:text-4xl flex items-center justify-center">
           Perform a transaction to view the dashboard
         </div>
@@ -37,10 +40,6 @@ export default function Dashboard() {
             className="w-32 md:w-64"
             alt="Logo for no Account"
           />
-        </div>
-
-        <div className="mx-3 md:mx-24">
-          <WalletSummary />
         </div>
       </div>
     );

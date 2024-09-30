@@ -11,6 +11,7 @@ export default function useGetWallet() {
   return useQuery({
     queryKey: ["wallet"],
     queryFn: getWallet,
-    enabled: true,
+    refetchInterval: 120000,
+    refetchOnWindowFocus: false
   });
 }
