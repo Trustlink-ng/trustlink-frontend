@@ -34,49 +34,49 @@ export default function Chart() {
   const COLORS = ["#FFBB28", "#FF8042", "#0088FE", "#00C49F"];
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full">
       <Card className=" w-full h-full">
-       (
-          <CardBody className="flex w-full h-full justify-center items-center">
-            {isLoading ? (
-              <Spinner />
-            ) : (
-              <ResponsiveContainer width="100%" height={240} className="flex">
-                <PieChart>
-                  <Pie
-                    data={formattedData}
-                    nameKey="name"
-                    dataKey="value"
-                    cx="40%"
-                    cy="50%"
-                    outerRadius={105}
-                    startAngle={180}
-                    endAngle={-180}
-                  >
-                    {formattedData.map((entry, index) => (
-                      <Cell
-                        key={entry.name}
-                        fill={COLORS[index]}
-                        stroke={COLORS[index]}
-                      />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  {/* <div className="w-full"> */}
-                  <Legend
-                    verticalAlign="middle"
-                    align="right"
-                    width={200}
-                    layout="vertical"
-                    iconSize={16}
-                    iconType="circle"
-                  />
-                  {/* </div> */}
-                </PieChart>
-              </ResponsiveContainer>
-            )}
-          </CardBody>
-        )
+        <CardBody className="flex w-full h-full justify-center items-center">
+          {isLoading ? (
+            <Spinner />
+          ) : transactions?.length == 0 ? (
+            <p className="h-full flex items-center justify-center text-xl font-medium">Perform a transaction to view this chart</p>
+          ) : (
+            <ResponsiveContainer width="100%" height={240} className="flex">
+              <PieChart>
+                <Pie
+                  data={formattedData}
+                  nameKey="name"
+                  dataKey="value"
+                  cx="40%"
+                  cy="50%"
+                  outerRadius={105}
+                  startAngle={180}
+                  endAngle={-180}
+                >
+                  {formattedData.map((entry, index) => (
+                    <Cell
+                      key={entry.name}
+                      fill={COLORS[index]}
+                      stroke={COLORS[index]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip />
+                {/* <div className="w-full"> */}
+                <Legend
+                  verticalAlign="middle"
+                  align="right"
+                  width={200}
+                  layout="vertical"
+                  iconSize={16}
+                  iconType="circle"
+                />
+                {/* </div> */}
+              </PieChart>
+            </ResponsiveContainer>
+          )}
+        </CardBody>
       </Card>
     </div>
   );

@@ -46,7 +46,7 @@ export default function MobileTransactionSummary({
   return (
     <div className="lg:hidden mac-h-[700px] w-full">
       <ul className="h-full divide-y-2 min-h-32 divide-main bg-white px-2 py-2 rounded-lg">
-        {transactions.length == 0 ? <p className="w-full text-center h-full">No transactions</p> : transactions?.map((transaction) => (
+        {transactions.length == 0 ? <p className="w-full text-center h-full flex items-center justify-center text-xl">No transactions</p> : transactions?.map((transaction) => (
           <li
             className="flex gap-3 bg-white px-2 py-3 cursor-pointer rounded-md hover:bg-slate-200"
             key={transaction?.id}

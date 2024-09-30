@@ -26,12 +26,18 @@ export default function Transfer() {
   }, []);
 
   return (
-    <div className="flex cursor-pointer flex-col items-center rounded-md hover:bg-blue-100 w-full gap-2 text-center p-2 justify-center" onClick={handleOpen}>
+    <div className="flex cursor-pointer flex-col items-center w-full gap-2 text-center rounded-md hover:bg-blue-100 p-2 justify-center">
       <div>
-        <IoPaperPlaneOutline className="text-xl lg:text-3xl" />
+        <IoPaperPlaneOutline
+          className="text-xl lg:text-3xl"
+          onClick={handleOpen}
+        />
       </div>
-      <p className="text-sm lg:text-base font-medium">Transfer</p>
-      <TransferFromWalletModal isOpen={isOpen} onOpenChange={handleClose} /> {/* Include the transfer modal */}
+      <p className="text-sm lg:text-base font-medium" onClick={handleOpen}>
+        Transfer
+      </p>
+      <TransferFromWalletModal isOpen={isOpen} onOpenChange={handleClose} />{" "}
+      {/* Include the transfer modal */}
     </div>
   );
 }

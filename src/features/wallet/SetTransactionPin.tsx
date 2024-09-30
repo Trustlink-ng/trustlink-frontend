@@ -38,7 +38,7 @@ export default function SetTransactionPin() {
           </h1>
         <form onSubmit={handleSubmit}>
           <div className="w-full">
-            <p className="text-slate-500 text-base">
+            <p className="text-slate-500 text-center text-base">
             Set your transaction PIN
             </p>
           </div>
