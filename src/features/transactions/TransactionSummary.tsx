@@ -10,7 +10,7 @@ import {
 } from "@nextui-org/react";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { columns, formatBalance } from "../../utils/helpers"; // Import columns
+import { columns, formatBalance, formatDate } from "../../utils/helpers"; // Import columns
 import { Transaction, TransactionTable, User } from "../../utils/types"; // Import Transaction type
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
@@ -73,7 +73,7 @@ export default function TransactionSummary({
           );
         case "date":
           return typeof cellValue === "string" || typeof cellValue === "number"
-            ? new Date(cellValue).toLocaleString()
+            ? formatDate(cellValue)
             : "--";
         default:
           return typeof cellValue === "string" || typeof cellValue === "number"

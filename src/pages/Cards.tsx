@@ -1,13 +1,16 @@
+import { Tab, Tabs } from "@nextui-org/react";
+import PaymentForm from "../features/cards/PaymentForm";
+
 export default function Cards() {
   return (
-    <div className="w-full flex-col gap-6 p-6 text-primary my-24 flex items-center justify-center">
-      <div className="flex flex-wrap text-center flex-col gap-6 justify-center items-center">
-        <h2 className="text-3xl lg:text-4xl font-semibold">Virtual Cards Coming Soon!</h2>
-        <p className="text-xl">Get ready for safer, smarter payments. Stay tuned!</p>
-      </div>
-      <div className="w-64 lg:w-96">
-        <img src="./virtual-card.svg" alt="Virtual Cards"/>
-      </div>
+    <div className="flex w-full flex-col px-6 py-4">
+      <Tabs size="lg" aria-label="Options" color="primary">
+        <Tab key="account" title="Card Deposit">
+          <div className="w-full text-primary my-5 flex justify-center">
+            <PaymentForm />
+          </div>
+        </Tab>
+      </Tabs>
     </div>
   );
 }

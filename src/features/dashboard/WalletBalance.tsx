@@ -9,11 +9,12 @@ export default function WalletBalance() {
   const { data, isLoading } = useGetWallet();
   const navigate = useNavigate();
   const {setFlowValid} = useFlow();
+  const isPinSet  = localStorage.getItem("isPinSet") == "true";
   const wallet = data?.wallet;
 
   return (
     <Card className="p-2 py-5 w-full rounded-lg">
-      {!wallet ? (
+      {!wallet && isPinSet == false ? (
         <CardHeader className="flex flex-col items-center justify-center gap-1">
           <Button
             className="bg-primary w-full max-w-xs outline-none data-[focus-visible=true]:outline-0 text-white"

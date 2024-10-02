@@ -1,4 +1,4 @@
-import { formatBalance } from "../../utils/helpers";
+import { formatBalance, formatDate } from "../../utils/helpers";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa";
 import { Spinner } from "@nextui-org/react";
 import { Wallet } from "../../utils/types";
@@ -12,17 +12,25 @@ export default function WalletHistory({
 }) {
   const getTransactionIcon = (transaction: Wallet) => {
     if (transaction?.type === "DEBIT") {
-      return <FaArrowUp color="blue" />;
+      return <FaArrowUp color="red" />;
     } else {
-      return <FaArrowDown color="blue" />;
+      return <FaArrowDown color="green" />;
     }
   };
 
   if (isLoading) return <Spinner />;
 
+  if (transactions?.length === 0) {
+    return (
+      <div className="w-full h-32 flex items-center justify-center">
+        <p>No wallet history</p>
+      </div>
+    );
+  }
+
   return (
     <div className="max-h-[700px] h-full grow lg:max-h-3/4">
-      <ul className="w-full h-full divide-y-3 divide-main bg-white  rounded-lg overflow-y-scroll">
+      <ul className="w-full divide-y-3 divide-main bg-white  rounded-lg overflow-y-scroll">
         {transactions?.map((transaction) => (
           <li
             className="flex gap-3 border-2 border-main hover:bg-slate-200 bg-white px-2 py-3 rounded-md"
@@ -49,7 +57,9 @@ export default function WalletHistory({
                     balance: transaction?.amount,
                   })}
                 </p>
-                <p className="text-[10px] text-white bg-gray-500 rounded-full py-0.25 px-[0.3rem]"></p>
+                <p className="text-sm py-0.25 px-[0.3rem]">
+                  {formatDate(transaction?.date)}
+                </p>
               </div>
             </div>
           </li>

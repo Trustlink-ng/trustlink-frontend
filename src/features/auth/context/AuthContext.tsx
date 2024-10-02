@@ -34,7 +34,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       "/verify-email",
       "/checkout",
       "/auth/complete-reset",
-      "/request-reset"
+      "/request-reset",
+      "/set-pin"
     ];
 
     // Set the authentication state based on the presence of a token
