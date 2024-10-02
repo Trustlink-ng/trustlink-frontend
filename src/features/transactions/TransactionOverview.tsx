@@ -10,7 +10,7 @@ import {
   Spinner,
   Textarea,
 } from "@nextui-org/react";
-import { formatBalance } from "../../utils/helpers";
+import { formatBalance, formatDate } from "../../utils/helpers";
 import useGetSingleTransactions from "./services/useGetSingleTransaction";
 import OtpInput from "../auth/OtpInput";
 import useVerifyTransaction from "./services/useVerifyTransaction";
@@ -36,10 +36,7 @@ export default function TransactionOverview() {
   const [isRefundOpen, setIsRefundOpen] = useState(false);
   const [isConfirmRefund, setIsConfirmRefund] = useState(false);
   const queryClient = useQueryClient();
-  const {
-    data: disputes,
-    isLoading: isFetchingDisputes,
-  } = useGetDisputes();
+  const { data: disputes, isLoading: isFetchingDisputes } = useGetDisputes();
 
   const matchingDispute = disputes?.data.find(
     (dispute) => dispute.transaction.id === transID
@@ -118,7 +115,7 @@ export default function TransactionOverview() {
     requestRefund(
       {
         reason: description,
-        proof: file, 
+        proof: file,
       },
       {
         onSuccess: () => {
@@ -187,7 +184,7 @@ export default function TransactionOverview() {
                       })}
                     </h2>
                     <p className="text-slate-500 font-medium">
-                      {new Date(transaction?.date || "").toLocaleString()}
+                      {formatDate(transaction?.date || "")}
                     </p>
                     <div className="flex gap-6">
                       <Chip

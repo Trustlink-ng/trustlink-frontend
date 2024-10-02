@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Transaction } from "../../utils/types"; // Import Transaction type
-import { formatBalance } from "../../utils/helpers";
+import { formatBalance, formatDate } from "../../utils/helpers";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa";
 import { Chip, ChipProps, Spinner } from "@nextui-org/react";
 
@@ -35,9 +35,9 @@ export default function MobileTransactionSummary({
 
   const getTransactionIcon = (transaction: Transaction) => {
     if (transaction?.type === "DEBIT") {
-      return <FaArrowUp color="blue" />;
+      return <FaArrowUp color="red" />;
     } else {
-      return <FaArrowDown color="blue" />;
+      return <FaArrowDown color="green" />;
     }
   };
 
@@ -46,52 +46,61 @@ export default function MobileTransactionSummary({
   return (
     <div className="lg:hidden mac-h-[700px] w-full">
       <ul className="h-full divide-y-2 min-h-32 divide-main bg-white px-2 py-2 rounded-lg">
-        {transactions.length == 0 ? <p className="w-full text-center h-full flex items-center justify-center text-xl">No transactions</p> : transactions?.map((transaction) => (
-          <li
-            className="flex gap-3 bg-white px-2 py-3 cursor-pointer rounded-md hover:bg-slate-200"
-            key={transaction?.id}
-            onClick={() => handleRowClick(transaction?.id)}
-          >
-            <div className="flex items-center w-12 h-12 px-4 py-5 bg-primary-50 rounded-full justify-center">
-              <div className="text-xl">{getTransactionIcon(transaction)}</div>
-            </div>
-            <div className="w-full flex justify-between items-center">
-              <div className="flex flex-col  gap-1">
-                <h3 className="lg:text-lg font-semibold text-primary ">
-                  {getTransactionName(transaction)}
-                </h3>
+        {transactions.length == 0 ? (
+          <p className="w-full text-center h-full flex items-center justify-center text-xl">
+            No transactions
+          </p>
+        ) : (
+          transactions?.map((transaction) => (
+            <li
+              className="flex gap-3 bg-white px-2 py-3 cursor-pointer rounded-md hover:bg-slate-200"
+              key={transaction?.id}
+              onClick={() => handleRowClick(transaction?.id)}
+            >
+              <div className="flex items-center w-12 h-12 px-4 py-5 bg-primary-50 rounded-full justify-center">
+                <div className="text-xl">{getTransactionIcon(transaction)}</div>
+              </div>
+              <div className="w-full flex justify-between items-center">
+                <div className="flex flex-col  gap-1">
+                  <h3 className="lg:text-lg font-semibold text-primary ">
+                    {getTransactionName(transaction)}
+                  </h3>
                   <p className="text-sm w-32 capitalize font-semibold text-gray-500 text-ellipsis overflow-hidden truncate">
                     {transaction?.description}
                   </p>
-              </div>
-              <div className="flex flex-col items-center gap-1">
-                <p
-                  className={`${
-                    transaction?.type === "CREDIT"
-                      ? "text-green-500"
-                      : "text-red-500"
-                  } lg:text-lg`}
-                >
-                  {formatBalance({
-                    country: "Nigeria",
-                    balance: transaction?.amount,
-                  })}
-                </p>
-                  <Chip
-                    className="capitalize rounded-sm lg:text-lg"
-                    color={statusColorMap[transaction.status] || "default"} // Ensure fallback color
-                    size="sm"
-                    variant="flat"
+                </div>
+                <div className="flex flex-col items-end gap-1">
+                  <p
+                    className={`${
+                      transaction?.type === "CREDIT"
+                        ? "text-green-500"
+                        : "text-red-500"
+                    } lg:text-lg`}
                   >
-                    {typeof transaction?.status === "string"
-                      ? transaction?.status
-                      : "Pending"}{" "}
-                    {/* Only render if cellValue is a string */}
-                  </Chip>
+                    {formatBalance({
+                      country: "Nigeria",
+                      balance: transaction?.amount,
+                    })}
+                  </p>
+                  <div className="w-full flex items-center gap-2">
+                    <p className="text-xs sm:text-sm">{formatDate(transaction?.date)}</p>
+                    <Chip
+                      className="capitalize rounded-sm lg:text-lg"
+                      color={statusColorMap[transaction.status] || "default"} // Ensure fallback color
+                      size="sm"
+                      variant="flat"
+                    >
+                      {typeof transaction?.status === "string"
+                        ? transaction?.status
+                        : "Pending"}{" "}
+                      {/* Only render if cellValue is a string */}
+                    </Chip>
+                  </div>
+                </div>
               </div>
-            </div>
-          </li>
-        ))}
+            </li>
+          ))
+        )}
       </ul>
     </div>
   );

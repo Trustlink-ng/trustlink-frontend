@@ -152,6 +152,46 @@ export function findLastIndex<T>(array: T[], predicate: (value: T, index: number
   return -1;
 }
 
+export const formatDate = (dateString: string | number): string => {
+  const date = new Date(dateString);
+  const now = new Date();
+
+  // Get the difference in time (milliseconds)
+  const diffTime = now.getTime() - date.getTime();
+
+  // Convert milliseconds into days
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  const options: Intl.DateTimeFormatOptions = {
+    hour: '2-digit',
+    minute: '2-digit',
+  };
+
+  // Check if it's today
+  if (diffDays === 0) {
+    return `Today, ${date.toLocaleTimeString([], options)}`;
+  }
+
+  // Check if it's yesterday
+  if (diffDays === 1) {
+    return `Yesterday, ${date.toLocaleTimeString([], options)}`;
+  }
+
+  // Check if it's within the last 7 days
+  if (diffDays > 1 && diffDays <= 7) {
+    const dayOfWeek = date.toLocaleDateString([], { weekday: 'long' });
+    return `${dayOfWeek}, ${date.toLocaleTimeString([], options)}`;
+  }
+
+  // For dates older than 7 days, format as dd/mm/yy
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+  const year = String(date.getFullYear()).slice(2); // Get the last two digits of the year
+
+  return `${day}/${month}/${year}, ${date.toLocaleTimeString([], options)}`;
+};
+
+
 
 const columns = [
   { name: "TID", uid: "id" },

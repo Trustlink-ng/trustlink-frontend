@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   parseDate,
   CalendarDate,
+  getLocalTimeZone,
 } from "@internationalized/date";
 import { DatePicker } from "@nextui-org/react";
 
@@ -12,6 +13,7 @@ import WalletHistory from "../features/wallet/WalletHistory";
 import { CiWallet } from "react-icons/ci";
 import { Outlet, useNavigate } from "react-router-dom";
 import { FiRefreshCw } from "react-icons/fi";
+import {getWalletHistoryBetweenDates } from "../utils/helpers";
 
 export default function Transactions() {
   const navigate = useNavigate();
@@ -38,6 +40,12 @@ export default function Transactions() {
 
   const { data, isLoading } = allTransactions;
   const transactions = data?.data || [];
+
+  const filteredWalletTransactions = getWalletHistoryBetweenDates(
+    transactions,
+    fromDate.toDate(getLocalTimeZone()), // Convert to Date
+    toDate.toDate(getLocalTimeZone()) // Convert to Date
+  );
 
 
   return (
@@ -88,7 +96,7 @@ export default function Transactions() {
             </div>
           </div>
           <WalletHistory
-            transactions={transactions}
+            transactions={filteredWalletTransactions}
             isLoading={isLoading}
           />
         </div>
