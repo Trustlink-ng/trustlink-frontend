@@ -4,6 +4,7 @@ import "react-credit-cards-2/dist/es/styles-compiled.css";
 import { TbCurrencyNaira } from "react-icons/tb";
 import useCardDeposit from "./services/useCardDeposit";
 import { Spinner } from "@nextui-org/react";
+import { toast } from "react-toastify";
 
 type Focused = "number" | "name" | "expiry" | "cvc" | "";
 
@@ -54,27 +55,33 @@ const PaymentForm: React.FC = () => {
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-    depositCard(
-      {
-        number: state.number,
-        expiry: state.expiry,
-        amount: +amount,
-        cvv: state.cvc,
-        name: state.name,
-      },
-      {
-        onSuccess: () => {
-          setAmount("");
-          setState({
-            number: "",
-            name: "",
-            expiry: "",
-            cvc: "",
-            focus: "",
-          });
+    if (+amount > 1000000) {
+      toast.error("Amount cannot be more than a million", {
+        toastId: "amount",
+      });
+    } else {
+      depositCard(
+        {
+          number: state.number,
+          expiry: state.expiry,
+          amount: +amount,
+          cvv: state.cvc,
+          name: state.name,
         },
-      }
-    );
+        {
+          onSuccess: () => {
+            setAmount("");
+            setState({
+              number: "",
+              name: "",
+              expiry: "",
+              cvc: "",
+              focus: "",
+            });
+          },
+        }
+      );
+    }
   };
 
   return (
