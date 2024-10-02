@@ -78,7 +78,7 @@ const PaymentForm: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-md h-full mx-auto mb-12">
       <Cards
         number={state.number}
         expiry={state.expiry}
@@ -88,7 +88,7 @@ const PaymentForm: React.FC = () => {
         acceptedCards={["visa", "mastercard", "verve"]}
       />
 
-      <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
+      <form className="mt-8 space-y-2" onSubmit={handleSubmit}>
         <div>
           <label
             htmlFor="amount"
